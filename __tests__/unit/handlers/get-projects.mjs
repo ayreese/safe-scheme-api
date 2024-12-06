@@ -1,11 +1,11 @@
-// Import getAllItemsHandler function from get-all-items.mjs 
-import { getAllItemsHandler } from '../../../src/handlers/get-all-items.mjs';
+// Import getAllItemsHandler function from get-projects.mjs
+import { getProjectsHandler } from '../../../src/handlers/get-projects.mjs';
 // Import dynamodb from aws-sdk 
-import { DynamoDBDocumentClient, ScanCommand } from '@aws-sdk/lib-dynamodb';
+import { DynamoDBDocumentClient, QueryCommand } from '@aws-sdk/lib-dynamodb';
 import { mockClient } from "aws-sdk-client-mock";
  
-// This includes all tests for getAllItemsHandler() 
-describe('Test getAllItemsHandler', () => { 
+// This includes all tests for getProjectsHandler()
+describe('Test getProjectsHandler', () => {
     const ddbMock = mockClient(DynamoDBDocumentClient);
  
     beforeEach(() => {
@@ -16,7 +16,7 @@ describe('Test getAllItemsHandler', () => {
         const items = [{ id: 'id1' }, { id: 'id2' }]; 
  
         // Return the specified value whenever the spied scan function is called 
-        ddbMock.on(ScanCommand).resolves({
+        ddbMock.on(QueryCommand).resolves({
             Items: items,
         }); 
  
@@ -25,7 +25,7 @@ describe('Test getAllItemsHandler', () => {
         };
  
         // Invoke helloFromLambdaHandler() 
-        const result = await getAllItemsHandler(event); 
+        const result = await getProjectsHandler(event);
  
         const expectedResult = { 
             statusCode: 200, 
