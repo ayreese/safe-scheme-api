@@ -11,25 +11,24 @@ Resources:
   # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
 
   # This is a Lambda function config associated with the source code: get-all-items.js
-  getAllItemsFunction:
+  getProjectsFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/handlers/get-all-items.getAllItemsHandler
+      Handler: src/handlers/get-projects.getProjectsHandler
       Runtime: nodejs20.x
       Architectures:
       - x86_64
       MemorySize: 128
       Timeout: 100
-      Description: A simple example includes a HTTP get method to get all items from
-        a DynamoDB table.
+      Description: Get user projects function
       Policies:
         # Give Create/Read/Update/Delete Permissions to the SampleTable
       - DynamoDBCrudPolicy:
-          TableName: !Ref SampleTable
+          TableName: !Ref ProjectsTable
       Environment:
         Variables:
           # Make table name accessible as environment variable from function code during execution
-          SAMPLE_TABLE: !Ref SampleTable
+          PROJECTS_TABLE: !Ref ProjectsTable
       Events:
         Api:
           Type: Api
@@ -37,8 +36,8 @@ Resources:
             Path: /
             Method: GET
 
-  # DynamoDB table to store item: {id: &lt;ID&gt;, name: &lt;NAME&gt;}
-  SampleTable:
+  # DynamoDB table to store projects
+  ProjectsTable:
     Type: AWS::Serverless::SimpleTable
     Properties:
       PrimaryKey:
