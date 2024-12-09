@@ -54,11 +54,19 @@ Resources:
             Method: GET
 
   ProjectsTable:
-    Type: AWS::Serverless::SimpleTable
+    Type: AWS::DynamoDB::Table
     Properties:
-      PrimaryKey:
-        Name: id
-        Type: String
+      TableName: ProjectsTable
+      AttributeDefinitions:
+        - AttributeName: user-id
+          AttributeType: S  # String type for partition key
+        - AttributeName: project-id
+          AttributeType: S  # String type for sort key
+      KeySchema:
+        - AttributeName: user-id
+          KeyType: HASH  # Partition key
+        - AttributeName: project-id
+          KeyType: RANGE # Sort key
       ProvisionedThroughput:
         ReadCapacityUnits: 2
         WriteCapacityUnits: 2
