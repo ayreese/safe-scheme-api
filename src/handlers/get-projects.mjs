@@ -1,24 +1,30 @@
-import {ddbDocClient} from "../../utils/dynamoClient.mjs";
-import {validateBody} from "../../functions/validate.mjs";
-import {QueryCommand} from "@aws-sdk/lib-dynamodb";
+import { ddbDocClient } from "../../utils/dynamoClient.mjs";
+import { validateBody } from "../../functions/validate.mjs";
+import { QueryCommand } from "@aws-sdk/lib-dynamodb";
 
-// Function to get user from table
+// Function to get projects from table based on user-id
 export const getProjectsHandler = async (event) => {
-    const parseBody = validateBody(event.body);
-    const {id} = parseBody;
-    const table = process.env.PROJECT_TABLES;
-    // Get user from table by ID
+    await validateBody(event);
+
+    // Ensure correct key extraction from the event object
+    const { 'user-id': userId } = event;  // Correctly extracting user-id
+
+    const table = process.env.PROJECT_TABLES;  // Get table name from environment variables
+    // Get projects from table by user-id
     const params = {
-        TableName: table,
-        KeyConditionExpression: "UserId = :id", // Correct KeyConditionExpression
+        TableName: table,  // Use the correct table name
+        KeyConditionExpression: "#userId = :id",  // Use placeholder for attribute name
+        ExpressionAttributeNames: {
+            "#userId": "user-id",  // Map placeholder to actual attribute name
+        },
         ExpressionAttributeValues: {
-            "project-id": id
-        }
+            ":id": userId,  // Binding the actual user ID
+        },
     };
 
     try {
         // Query DynamoDB for user data
-        const {items: Items} = await ddbDocClient.send(new QueryCommand(params));
+        const { Items } = await ddbDocClient.send(new QueryCommand(params));
 
         // Switch based on Items
         switch (true) {
@@ -26,21 +32,21 @@ export const getProjectsHandler = async (event) => {
                 console.info('Found projects:', Items);
                 return {
                     statusCode: 200,
-                    body: JSON.stringify({projects: Items})
+                    body: JSON.stringify({ projects: Items }),
                 };
 
             case (Items && Items.length === 0):
-                console.warn('No projects found for user ID:', id);
+                console.warn('No projects found for user ID:', userId);
                 return {
                     statusCode: 404,
-                    body: JSON.stringify({message: "Not Found"})
+                    body: JSON.stringify({ message: "Not Found" }),
                 };
 
             default:
                 console.error('Unexpected error or condition occurred');
                 return {
                     statusCode: 500,
-                    body: JSON.stringify({message: "Something went wrong."})
+                    body: JSON.stringify({ message: "Something went wrong." }),
                 };
         }
     } catch (error) {
@@ -48,7 +54,7 @@ export const getProjectsHandler = async (event) => {
         console.error('Error occurred while querying DynamoDB:', error.message);
         return {
             statusCode: 500,
-            body: JSON.stringify({message: "Bad Request", error: error.message})
+            body: JSON.stringify({ message: "Bad Request", error: error.message }),
         };
     }
 };

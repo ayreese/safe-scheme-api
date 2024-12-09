@@ -8,20 +8,11 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: src/handlers/create-project.createProjectHandler
-      Runtime: nodejs20.x
-      Architectures:
-        - x86_64
-      MemorySize: 128
-      Timeout: 100
       Description: Create project function
       Policies:
         # Give Create/Read/Update/Delete Permissions to the ProjectsTable
         - DynamoDBCrudPolicy:
             TableName: !Ref ProjectsTable
-      Environment:
-        Variables:
-          PROJECTS_TABLE: !Ref ProjectsTable # Accessible as an env var from Lambda
-          DYNAMODB_ENDPOINT: https://localhost:8000
       Events:
         Api:
           Type: Api
@@ -33,19 +24,11 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: src/handlers/get-projects.getProjectsHandler
-      Runtime: nodejs20.x
-      Architectures:
-        - x86_64
-      MemorySize: 128
-      Timeout: 100
       Description: Get user projects function
       Policies:
         # Same policy for DynamoDB CRUD operations
         - DynamoDBCrudPolicy:
             TableName: !Ref ProjectsTable
-      Environment:
-        Variables:
-          PROJECTS_TABLE: !Ref ProjectsTable  # Accessible as an env var from Lambda
       Events:
         Api:
           Type: Api
@@ -93,7 +76,16 @@ Outputs:
 
 Globals:
   Function:
+    Runtime: nodejs20.x
+    Architectures:
+      - x86_64
+    MemorySize: 128
     Tracing: Active
+    Timeout: 100
+    Environment:
+      Variables:
+        PROJECTS_TABLE: !Ref ProjectsTable # Accessible as an env var from Lambda
+        DYNAMODB_ENDPOINT: https://localhost:8000
     LoggingConfig:
       LogFormat: JSON
   Api:
