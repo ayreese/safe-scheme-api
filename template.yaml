@@ -20,7 +20,8 @@ Resources:
             TableName: !Ref ProjectsTable
       Environment:
         Variables:
-          PROJECTS_TABLE: !Ref ProjectsTable  # Accessible as an env var from Lambda
+          PROJECTS_TABLE: !Ref ProjectsTable # Accessible as an env var from Lambda
+          DYNAMODB_ENDPOINT: https://localhost:8000
       Events:
         Api:
           Type: Api

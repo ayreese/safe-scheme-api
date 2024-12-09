@@ -6,15 +6,15 @@ import {tasksHelper} from "../../functions/tasks-helper.mjs";
 
 // Function to get user from table
 export const createProjectHandler = async (event) => {
-    const table = process.env.PROJECT_TABLE;
-    await validateBody(event.body);
-    const parseBody = JSON.parse(event.body);
-    const {projectName, tasks} = parseBody;
+    // const table = process.env.PROJECT_TABLE;
+    await validateBody(event);
+    // const parseBody = JSON.parse(event);
+    const {projectName, tasks} = event;
     const userID = crypto.randomBytes(8).toString('hex'); // Generate userID
     const projectID = crypto.randomBytes(8).toString('hex'); // Generate projectID
 
     const params = {
-        TableName: table,
+        TableName: "ProjectsTable",
         Item: {
             'user-id': userID,
             'project-id': projectID,

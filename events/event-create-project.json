@@ -1,3 +1,8 @@
 {
-  "body": "{\"projectName\": \"Project Burger\", \"tasks\": [{\"name\": \"Make burgers\"}, {\"status\": \"false\"},{\"name\": \"add cheese\"}, {\"status\": \"false\"}, {\"name\": \"no onion\"}, {\"status\": \"false\"}]}"
+  "projectName": "Project Burger",
+  "tasks": [
+    {"name": "Make burgers", "status": "false"},
+    {"name": "add cheese", "status": "false"},
+    {"name": "no onion", "status": "false"}
+  ]
 }
