@@ -6,7 +6,7 @@ import {QueryCommand} from "@aws-sdk/lib-dynamodb";
 export const getProjectsHandler = async (event) => {
     const parseBody = validateBody(event.body);
     const {id} = parseBody;
-    const table = process.env.PROJECT_TABLE;
+    const table = process.env.PROJECT_TABLES;
     // Get user from table by ID
     const params = {
         TableName: table,

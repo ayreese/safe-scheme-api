@@ -1,13 +1,9 @@
-AWSTemplateFormatVersion: 2010-09-09
+AWSTemplateFormatVersion: '2010-09-09'
 Description: >-
   safe-scheme-api
-Transform:
-- AWS::Serverless-2016-10-31
+Transform: 'AWS::Serverless-2016-10-31'  # Should be a string, not an array
 
-# Resources declares the AWS resources that you want to include in the stack
-# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
 Resources:
-  # This is a Lambda function config associated with the source code: get-projects.mjs
   createProjectFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -17,40 +13,38 @@ Resources:
         - x86_64
       MemorySize: 128
       Timeout: 100
-      Description: Get user projects function
+      Description: Create project function
       Policies:
-        # Give Create/Read/Update/Delete Permissions to the SampleTable
+        # Give Create/Read/Update/Delete Permissions to the ProjectsTable
         - DynamoDBCrudPolicy:
             TableName: !Ref ProjectsTable
       Environment:
         Variables:
-          # Make table name accessible as environment variable from function code during execution
-          PROJECTS_TABLE: !Ref ProjectsTable
+          PROJECTS_TABLE: !Ref ProjectsTable  # Accessible as an env var from Lambda
       Events:
         Api:
           Type: Api
           Properties:
             Path: /create-project
             Method: POST
-  # This is a Lambda function config associated with the source code: get-projects.mjs
+
   getProjectsFunction:
     Type: AWS::Serverless::Function
     Properties:
       Handler: src/handlers/get-projects.getProjectsHandler
       Runtime: nodejs20.x
       Architectures:
-      - x86_64
+        - x86_64
       MemorySize: 128
       Timeout: 100
       Description: Get user projects function
       Policies:
-        # Give Create/Read/Update/Delete Permissions to the SampleTable
-      - DynamoDBCrudPolicy:
-          TableName: !Ref ProjectsTable
+        # Same policy for DynamoDB CRUD operations
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ProjectsTable
       Environment:
         Variables:
-          # Make table name accessible as environment variable from function code during execution
-          PROJECTS_TABLE: !Ref ProjectsTable
+          PROJECTS_TABLE: !Ref ProjectsTable  # Accessible as an env var from Lambda
       Events:
         Api:
           Type: Api
@@ -58,7 +52,6 @@ Resources:
             Path: /get-project
             Method: GET
 
-  # DynamoDB table to store projects
   ProjectsTable:
     Type: AWS::Serverless::SimpleTable
     Properties:
@@ -76,21 +69,22 @@ Resources:
         Fn::Sub: ApplicationInsights-SAM-${AWS::StackName}
       ResourceQuery:
         Type: CLOUDFORMATION_STACK_1_0
+
   ApplicationInsightsMonitoring:
     Type: AWS::ApplicationInsights::Application
     Properties:
       ResourceGroupName:
         Ref: ApplicationResourceGroup
       AutoConfigurationEnabled: 'true'
+
 Outputs:
   WebEndpoint:
     Description: API Gateway endpoint URL for Prod stage
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
-# # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+
 Globals:
   Function:
     Tracing: Active
-    # You can add LoggingConfig parameters such as the Logformat, Log Group, and SystemLogLevel or ApplicationLogLevel. Learn more here https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html#sam-function-loggingconfig.
     LoggingConfig:
       LogFormat: JSON
   Api:
