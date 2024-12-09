@@ -1,17 +1,18 @@
 import {ddbDocClient} from "../../utils/dynamoClient.mjs";
-import {validateBody, projectTable} from "../../functions/validate.mjs";
+import {validateBody} from "../../functions/validate.mjs";
 import {QueryCommand} from "@aws-sdk/lib-dynamodb";
 
 // Function to get user from table
 export const getProjectsHandler = async (event) => {
-    // Check for null and other invalid types
-    const id = validateBody(event.body);
+    const parseBody = validateBody(event.body);
+    const {id} = parseBody;
+    const table = process.env.PROJECT_TABLE;
     // Get user from table by ID
     const params = {
-        TableName: projectTable,
+        TableName: table,
         KeyConditionExpression: "UserId = :id", // Correct KeyConditionExpression
         ExpressionAttributeValues: {
-            ":id": id
+            "project-id": id
         }
     };
 
