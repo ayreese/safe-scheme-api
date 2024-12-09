@@ -1,40 +1,41 @@
-// Create a DocumentClient that represents the query to add an item
-import {DynamoDBClient,} from '@aws-sdk/client-dynamodb';
-import {DynamoDBDocumentClient, PutCommand} from '@aws-sdk/lib-dynamodb';
-
-const client = new DynamoDBClient({});
-const ddbDocClient = DynamoDBDocumentClient.from(client);
-const crypto = require('crypto');
-
-// Get the DynamoDB table name from environment variables
-const projectTable = process.env.PROJECTS_TABLE;
+import {ddbDocClient} from "../../utils/dynamoClient.mjs";
+import crypto from 'crypto';
+import {validateBody} from "../../functions/validate.mjs";
+import {PutCommand} from "@aws-sdk/lib-dynamodb";
+import {tasksHelper} from "../../functions/tasks-helper.mjs";
 
 // Function to get user from table
 export const createProjectHandler = async (event) => {
-    if (!event.body) {
-        console.error("Invalid project:", event.body);
-        throw new Error(`${event.body} is not applicable`);
-    }
+    const table = process.env.PROJECT_TABLE;
+    await validateBody(event.body);
+    const parseBody = JSON.parse(event.body);
+    const {projectName, tasks} = parseBody;
+    const userID = crypto.randomBytes(8).toString('hex'); // Generate userID
+    const projectID = crypto.randomBytes(8).toString('hex'); // Generate projectID
 
-    const project = event.body;
     const params = {
-        TableName: projectTable,
+        TableName: table,
         Item: {
-            userID: project.userID,
-            projectID: crypto.randomBytes(16).toString('hex'),
-            projectName: project.projectName,
-            tasks: project.tasks,
-
-
+            'user-id': userID,
+            'project-id': projectID,
+            'project-name': projectName,
+            tasks: tasksHelper(tasks),
         }
-    }
+    };
 
     try {
-        const data = await ddbDocClient.send(new PutCommand(params));
-        console.info('Successfully created project:', data);
+        console.log("Inserting project with params:", params.Item);
+        await ddbDocClient.send(new PutCommand(params));
+        console.info(`Successfully created project: ${projectName}`);
+        return {
+            statusCode: 200,
+            body: JSON.stringify({message: "Created project"})
+        };
     } catch (e) {
-        console.error(e);
+        console.error("Error creating project", e);
+        return {
+            statusCode: 500,
+            body: JSON.stringify({message: "Failed to create project", error: e.message})
+        };
     }
-
-
 };
