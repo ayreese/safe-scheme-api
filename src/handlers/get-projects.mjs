@@ -9,7 +9,7 @@ export const getProjectsHandler = async (event) => {
     // Ensure correct key extraction from the event object
     const { 'user-id': userId } = event;  // Correctly extracting user-id
 
-    const table = process.env.PROJECT_TABLES;  // Get table name from environment variables
+    const table = process.env.PROJECTS_TABLES;  // Get table name from environment variables
     // Get projects from table by user-id
     const params = {
         TableName: table,  // Use the correct table name
