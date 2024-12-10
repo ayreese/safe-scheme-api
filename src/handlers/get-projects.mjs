@@ -13,7 +13,7 @@ export const getProjectsHandler = async (event) => {
     // Get projects from table by user-id
     const params = {
         TableName: table,  // Use the correct table name
-        KeyConditionExpression: "#userId = :id",  // Use placeholder for attribute name
+        KeyConditionExpression: "#userId = :id", // Use placeholder for attribute name
         ExpressionAttributeNames: {
             "#userId": "user-id",  // Map placeholder to actual attribute name
         },
