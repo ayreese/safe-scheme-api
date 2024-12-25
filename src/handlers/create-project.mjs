@@ -3,7 +3,6 @@ import crypto from 'crypto';
 import {PutCommand} from "@aws-sdk/lib-dynamodb";
 import {tasksHelper} from "../../functions/tasks-helper.mjs";
 
-// Function to get user from table
 export const createProjectHandler = async (event) => {
     const table = "ProjectsTable";
     const {ProjectName: projectName, Tasks: tasks} = event;
