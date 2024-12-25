@@ -93,9 +93,10 @@ Resources:
         Api:
           Type: Api
           Properties:
+            RestApiId: !Ref SafeSchemeAPI
             Path: /get-project
             Method: GET
-            RequestModels:
+            RequestModel:
               Model: Project
               Required: true
               ValidateBody: true
