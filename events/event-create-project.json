@@ -1,6 +1,6 @@
 {
-  "projectName": "Project Burger",
-  "tasks": [
+  "ProjectName": "Project Burger",
+  "Tasks": [
     {"name": "Make burgers", "status": "false"},
     {"name": "add cheese", "status": "false"},
     {"name": "no onion", "status": "false"}
