@@ -4,6 +4,7 @@ version = 0.1
 
 [default.global.parameters]
 stack_name = "safe-scheme-api"
+profile = "Alex-Development"
 
 [default.build.parameters]
 cached = true

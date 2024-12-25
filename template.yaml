@@ -1,16 +1,77 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: >-
   safe-scheme-api
-Transform: 'AWS::Serverless-2016-10-31'  # Should be a string, not an array
+Transform: 'AWS::Serverless-2016-10-31'
+
+Globals:
+  Function:
+    Runtime: nodejs20.x
+    Architectures:
+      - x86_64
+    MemorySize: 128
+    Tracing: Active
+    Timeout: 100
+    Environment:
+      Variables:
+        PROJECTS_TABLE: !Ref ProjectsTable
+        DYNAMODB_ENDPOINT: http://localhost:8000
+  Api:
+    TracingEnabled: true
+
 
 Resources:
+  SafeSchemeAPI:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: SafeSchemeAPI
+      Description: API for Safe Scheme Application
+      StageName: prod
+      Auth:
+        DefaultAuthorizer: CognitoAuthorizer
+        Authorizers:
+          CognitoAuthorizer:
+            UserPoolArn:
+              Fn::GetAtt: [SafeSchemeUserPool, Arn]
+      Models:
+        User:
+          type: object
+          required:
+            - UserId
+          properties:
+            UserId:
+              type: string
+        Project:
+          type: object
+          required:
+            - UserId
+            - ProjectId
+          properties:
+            UserId:
+              type: string
+            ProjectId:
+              type: string
+            ProjectName:
+              type: string
+            Tasks:
+              type: list
+        Task:
+          type: object
+          required:
+            - ProjectId
+            - TaskId
+            - TaskName
+          properties:
+            ProjectId:
+              type: string
+            TaskId:
+              type: string
+
   createProjectFunction:
     Type: AWS::Serverless::Function
     Properties:
       Handler: src/handlers/create-project.createProjectHandler
       Description: Create project function
       Policies:
-        # Give Create/Read/Update/Delete Permissions to the ProjectsTable
         - DynamoDBCrudPolicy:
             TableName: !Ref ProjectsTable
       Events:
@@ -19,8 +80,6 @@ Resources:
           Properties:
             Path: /create-project
             Method: POST
-
-
   getProjectsFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -36,56 +95,67 @@ Resources:
           Properties:
             Path: /get-project
             Method: GET
-
+            RequestModels:
+              Model: Project
+              Required: true
+              ValidateBody: true
   ProjectsTable:
     Type: AWS::DynamoDB::Table
     Properties:
       TableName: !Sub "ProjectsTable-${AWS::StackName}"
       AttributeDefinitions:
-        - AttributeName: user-id
+        - AttributeName: UserId
           AttributeType: S  # String type for partition key
-        - AttributeName: project-id
+        - AttributeName: ProjectId
           AttributeType: S  # String type for sort key
       KeySchema:
-        - AttributeName: user-id
+        - AttributeName: UserId
           KeyType: HASH  # Partition key
-        - AttributeName: project-id
+        - AttributeName: ProjectId
           KeyType: RANGE # Sort key
       ProvisionedThroughput:
         ReadCapacityUnits: 2
         WriteCapacityUnits: 2
-
+  SafeSchemeUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: SafeSchemeUserPool
+      AccountRecoverySetting:
+        RecoveryMechanisms:
+          - Name: verified_email
+            Priority: 1
+          - Name: verified_phone_number
+            Priority: 2
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireUppercase: true
+          RequireNumbers: true
+          RequireSymbols: true
+      UsernameAttributes:
+        - email
+      Schema:
+        - AttributeDataType: String
+          Name: email
+          Required: true
+  SafeSchemeUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref SafeSchemeUserPool
+      ClientName: SafeSchemeUserPoolClient
+      GenerateSecret: false
   ApplicationResourceGroup:
     Type: AWS::ResourceGroups::Group
     Properties:
       Name: !Sub "ApplicationInsights-SAM-${AWS::StackName}"
       ResourceQuery:
         Type: CLOUDFORMATION_STACK_1_0
-
   ApplicationInsightsMonitoring:
     Type: AWS::ApplicationInsights::Application
     Properties:
       ResourceGroupName: !Ref ApplicationResourceGroup
       AutoConfigurationEnabled: true
-
 Outputs:
   WebEndpoint:
     Description: API Gateway endpoint URL for Prod stage
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
-
-Globals:
-  Function:
-    Runtime: nodejs20.x
-    Architectures:
-      - x86_64
-    MemorySize: 128
-    Tracing: Active
-    Timeout: 100
-    Environment:
-      Variables:
-        PROJECTS_TABLE: !Ref ProjectsTable # Accessible as an env var from Lambda
-        DYNAMODB_ENDPOINT: http://host.docker.internal:8000
-    LoggingConfig:
-      LogFormat: JSON
-  Api:
-    TracingEnabled: true
