@@ -1,18 +1,19 @@
-import {ddbDocClient} from "../../utils/dynamoClient.mjs";
+import {client} from "../../utils/dynamoClient.mjs";
 import crypto from 'crypto';
 import {PutCommand} from "@aws-sdk/lib-dynamodb";
 import {tasksHelper} from "../../functions/tasks-helper.mjs";
 
 export const createProjectHandler = async (event) => {
-    const table = "ProjectsTable";
-    const {ProjectName: projectName, Tasks: tasks} = event;
+    const project = JSON.parse(event.body);
+    const tableName = process.env.PROJECTS_TABLE;
+    const {ProjectName: projectName, Tasks: tasks} = project;
     const userId = crypto.randomBytes(8).toString('hex'); // Generate userId
     const projectId = crypto.randomBytes(8).toString('hex'); // Generate projectId
 
     try {
-        console.log("Creating Project");
-        await ddbDocClient.send(new PutCommand({
-            TableName: table,
+        console.log(`Creating Project`);
+        await client.send(new PutCommand({
+            TableName: tableName,
             Item: {
                 UserId: userId,
                 ProjectId: projectId,

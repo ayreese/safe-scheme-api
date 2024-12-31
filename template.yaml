@@ -14,7 +14,7 @@ Globals:
     Environment:
       Variables:
         PROJECTS_TABLE: !Ref ProjectsTable
-        DYNAMODB_ENDPOINT: http://localhost:8000
+        DYNAMODB_ENDPOINT: http://safe-scheme-db:8000
   Api:
     TracingEnabled: true
 
@@ -31,7 +31,7 @@ Resources:
         Authorizers:
           CognitoAuthorizer:
             UserPoolArn:
-              Fn::GetAtt: [SafeSchemeUserPool, Arn]
+              Fn::GetAtt: [ SafeSchemeUserPool, Arn ]
       Models:
         User:
           type: object
@@ -78,8 +78,13 @@ Resources:
         Api:
           Type: Api
           Properties:
+            RestApiId: !Ref SafeSchemeAPI
             Path: /create-project
             Method: POST
+            RequestModel:
+              Model: Project
+              Required: true
+              ValidateBody: true
   getProjectsFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -159,4 +164,4 @@ Resources:
 Outputs:
   WebEndpoint:
     Description: API Gateway endpoint URL for Prod stage
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+    Value: !Sub "https://${SafeSchemeAPI}.execute-api.${AWS::Region}.amazonaws.com/prod/"

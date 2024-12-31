@@ -1,16 +1,16 @@
-import {ddbDocClient} from "../../utils/dynamoClient.mjs";
+import {client} from "../../utils/dynamoClient.mjs";
 import {QueryCommand} from "@aws-sdk/lib-dynamodb";
 
 // Function to get projects from table based on UserId
 export const getProjectsHandler = async (event) => {
-
-    const {UserId: userId} = event;  // Correctly extracting UserId
+    const user = JSON.parse(event.body);
+    const {UserId: userId} = user;  // Correctly extracting UserId
 
     const table = process.env.PROJECTS_TABLE;  // Get table name from environment variables
 
     try {
         // Query DynamoDB for user data
-        const {Items} = await ddbDocClient.send(new QueryCommand({
+        const {Items} = await client.send(new QueryCommand({
             TableName: table,
             KeyConditionExpression: "UserId = :userId",
             ExpressionAttributeValues: {
