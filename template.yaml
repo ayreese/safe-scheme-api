@@ -108,7 +108,7 @@ Resources:
   ProjectsTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: !Sub "ProjectsTable"
+      TableName: "ProjectsTable"
       AttributeDefinitions:
         - AttributeName: UserId
           AttributeType: S  # String type for partition key
