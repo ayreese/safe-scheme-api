@@ -23,7 +23,7 @@ export const createProjectHandler = async (event) => {
         }));
         console.info(`Successfully created project: ${projectName}`);
         return {
-            statusCode: 200,
+            statusCode: 201,
             body: JSON.stringify({message: "Created project"})
         };
     } catch (e) {

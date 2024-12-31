@@ -17,6 +17,7 @@ export const getProjectsHandler = async (event) => {
                 ":userId": userId,
             },
         }));
+        console.log("ALL TABLE ITEMS",Items);
 
         // Switch based on Items
         switch (true) {
