@@ -1,0 +1,19 @@
+type: object
+properties:
+  id:
+    type: string
+    description: The unique identifier for the project
+  name:
+    type: string
+    description: The name of the project
+  description:
+    type: string
+    description: A brief description of the project
+  status:
+    type: boolean
+    description: Status of complete or incomplete
+  createdAt:
+    type: string
+    format: date-time
+    description: The date and time when the project was created
+  required: false
