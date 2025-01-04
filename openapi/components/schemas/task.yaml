@@ -9,6 +9,9 @@ properties:
   description:
     type: string
     description: A brief description of the project
+  subtask:
+    type: object
+    description: A subtask with a name (string )and status (boolean)
   status:
     type: boolean
     description: Status of complete or incomplete
@@ -16,4 +19,6 @@ properties:
     type: string
     format: date-time
     description: The date and time when the project was created
-  required: false
+required:
+  - id
+  - name

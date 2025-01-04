@@ -1,0 +1,23 @@
+openapi: 3.1.1
+info:
+  title: Safe-Scheme
+  description: Safe-Scheme API specification
+  version: 1.0.0
+servers:
+  - url: "https://localhost:3000"
+paths:
+  /get-projects:
+    $ref: './api/get-projects.yaml'
+  /create-project:
+    $ref: "./api/create-project.yaml"
+  /edit-project:
+    $ref: "./api/edit-project.yaml"
+  /delete-project:
+    $ref: "./api/delete-project.yaml"
+  /create-task:
+    $ref: "./api/create-tasks.yaml"
+  /edit-task:
+    $ref: "./api/edit-task.yaml"
+  /delete-task:
+    $ref: "./api/delete-task.yaml"
+

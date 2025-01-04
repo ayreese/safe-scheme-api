@@ -1,0 +1,21 @@
+post:
+  summary: Creates a task
+  description: Adds task(s) to a project for an authenticated users
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: array
+          items:
+            $ref: "../components/schemas/task.yaml"
+  responses:
+    "201":
+      description: Task successfully created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string

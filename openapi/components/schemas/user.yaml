@@ -1,0 +1,16 @@
+type: object
+properties:
+  id:
+    type: string
+    description: The unique identifier for the user
+  email:
+    type: string
+    description: Email that belongs to the user
+  firstName:
+    type: string
+    description: The first name of the user
+  lastName:
+    type: string
+    description: The last name of the user
+required:
+  - id

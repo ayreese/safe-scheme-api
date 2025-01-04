@@ -1,0 +1,19 @@
+summary: Get list of projects
+description: Query projects based on UserId
+parameters:
+  - name: UserId
+    in: path
+    description: The ID of the user for whom to retrieve projects
+    required: true
+    schema:
+      type: string
+get:
+  responses:
+    "200":
+      description: A list of projects for the user
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '../components/schemas/project.yaml'

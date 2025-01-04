@@ -1,0 +1,16 @@
+post:
+  summary: Create a project
+  description: This endpoint creates a project for a authenticated users
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../components/schemas/project.yaml"
+  responses:
+    "201":
+      description: Project successfully created
+      content:
+        application/json:
+          schema:
+            $ref: "../components/schemas/project.yaml"

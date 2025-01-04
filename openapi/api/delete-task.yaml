@@ -1,0 +1,21 @@
+delete:
+  summary: Delete a task
+  description: The endpoint takes a ProjectId, TaskId and deletes the task. Task can't be retrieved after deletion
+  parameters:
+  - name: ProjectId
+    in: path
+    description: The ID of the project the task belongs to
+    required: true
+    schema:
+      type: string
+  - name: TaskId
+    in: path
+    description: The ID of task to delete
+    required: true
+    schema:
+      type: string
+  responses:
+    "204":
+      description: Task deleted
+
+

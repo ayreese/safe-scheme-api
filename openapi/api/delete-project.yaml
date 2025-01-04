@@ -1,0 +1,15 @@
+delete:
+  summary: Delete a project
+  description: The endpoint takes a projectId and deletes the projects. Project can't be retrieved after deletion
+  parameters:
+    - name: ProjectId
+      in: path
+      description: The ID of project to delete
+      required: true
+      schema:
+        type: string
+  responses:
+    "204":
+      description: Project deleted
+
+

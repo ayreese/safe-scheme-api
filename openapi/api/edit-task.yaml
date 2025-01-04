@@ -1,0 +1,31 @@
+patch:
+  summary: Update a task
+  description: This endpoints takes a UserId, ProjectId, TaskId and updates the name and description of the task.
+  parameters:
+    - name: UserId
+      in: path
+      description: ID of the user of which the project belongs to
+      required: true
+      schema:
+        type: string
+    - name: ProjectId
+      in: path
+      description: ID of the project being updated
+      required: true
+      schema:
+        type: string
+    - name: TaskId
+      in: path
+      description: ID of the project being updated
+      required: true
+      schema:
+        type: string
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../components/schemas/task.yaml"
+  responses:
+    "204":
+      description: Successfully updated task

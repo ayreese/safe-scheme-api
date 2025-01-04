@@ -9,6 +9,11 @@ properties:
   description:
     type: string
     description: A brief description of the project
+  tasks:
+    type: array
+    items:
+      $ref: "./task.yaml"
+    description: A list of tasks associated with the project
   createdAt:
     type: string
     format: date-time
