@@ -1,7 +1,13 @@
 delete:
   summary: Delete a project
-  description: The endpoint takes a projectId and deletes the projects. Project can't be retrieved after deletion
+  description: Deletes a project associated with a specific user. The project is permanently deleted and cannot be retrieved after deletion.
   parameters:
+    - name: UserId
+      in: path
+      description: The ID of user who the project belongs to
+      required: true
+      schema:
+        type: string
     - name: ProjectId
       in: path
       description: The ID of project to delete

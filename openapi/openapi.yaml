@@ -12,7 +12,7 @@ paths:
     $ref: "./api/create-project.yaml"
   /edit-project:
     $ref: "./api/edit-project.yaml"
-  /delete-project:
+  /delete-project/{userId}/{projectId}:
     $ref: "./api/delete-project.yaml"
   /create-task:
     $ref: "./api/create-tasks.yaml"
