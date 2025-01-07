@@ -176,6 +176,24 @@ Resources:
       UserPoolId: !Ref SafeSchemeUserPool
       ClientName: SafeSchemeUserPoolClient
       GenerateSecret: false
+      AllowedOAuthFlows:
+        - code
+      AllowedOAuthScopes:
+        - openid
+        - profile
+        - email
+      AllowedOAuthFlowsUserPoolClient: true
+      CallbackURLs:
+        - !Sub "http://localhost:3000/callback"
+      LogoutURLs:
+        - !Sub "http://localhost:3000/logout"
+      SupportedIdentityProviders:
+        - COGNITO
+  SafeSchemeCognitoDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      Domain: !Sub 'safe-scheme-auth'  # You can change this to any valid domain prefix
+      UserPoolId: !Ref SafeSchemeUserPool
   ApplicationResourceGroup:
     Type: AWS::ResourceGroups::Group
     Properties:
@@ -191,3 +209,9 @@ Outputs:
   WebEndpoint:
     Description: API Gateway endpoint URL for Prod stage
     Value: !Sub "https://${SafeSchemeAPI}.execute-api.${AWS::Region}.amazonaws.com/prod/"
+  UserPoolId:
+    Value: !Ref SafeSchemeUserPool
+    Description: 'Cognito User Pool ID'
+  UserPoolClientId:
+    Value: !Ref SafeSchemeUserPoolClient
+    Description: 'Cognito User Pool Client ID'
