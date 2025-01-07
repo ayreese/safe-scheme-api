@@ -30,8 +30,6 @@ Resources:
           StatusCode: 404
         UNAUTHORIZED:
           StatusCode: 401
-          ResponseParameters:
-            gatewayresponse.header.X-Auth-Failure: "'true'"
       Auth:
         DefaultAuthorizer: CognitoAuthorizer
         Authorizers:
