@@ -1,21 +1,24 @@
+summary: Delete a project
+description: Deletes a project associated with a specific user. The project is permanently deleted and cannot be retrieved after deletion.
+parameters:
+  - name: UserId
+    in: path
+    description: The ID of user who the project belongs to
+    required: true
+    schema:
+      type: string
+  - name: ProjectId
+    in: path
+    description: The ID of project to delete
+    required: true
+    schema:
+      type: string
 delete:
-  summary: Delete a project
-  description: Deletes a project associated with a specific user. The project is permanently deleted and cannot be retrieved after deletion.
-  parameters:
-    - name: UserId
-      in: path
-      description: The ID of user who the project belongs to
-      required: true
-      schema:
-        type: string
-    - name: ProjectId
-      in: path
-      description: The ID of project to delete
-      required: true
-      schema:
-        type: string
   responses:
     "204":
-      description: Project deleted
+      description: Project deletion confirmation message
+
+
+
 
 
