@@ -18,7 +18,6 @@ Globals:
   Api:
     TracingEnabled: true
 
-
 Resources:
   SafeSchemeAPI:
     Type: AWS::Serverless::Api
@@ -26,6 +25,13 @@ Resources:
       Name: SafeSchemeAPI
       Description: API for Safe Scheme Application
       StageName: prod
+      GatewayResponses:
+        DEFAULT_4XX:
+          StatusCode: 404
+        UNAUTHORIZED:
+          StatusCode: 401
+          ResponseParameters:
+            gatewayresponse.header.X-Auth-Failure: "'true'"
       Auth:
         DefaultAuthorizer: CognitoAuthorizer
         Authorizers:
@@ -65,7 +71,26 @@ Resources:
               type: string
             TaskId:
               type: string
-
+  getProjectsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/get-projects.getProjectsHandler
+      Description: Get user projects function
+      Policies:
+        # Same policy for DynamoDB CRUD operations
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ProjectsTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref SafeSchemeAPI
+            Path: /get-projects/{UserId}
+            Method: GET
+            RequestModel:
+              Model: Project
+              Required: true
+              ValidateBody: true
   createProjectFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -85,13 +110,12 @@ Resources:
               Model: Project
               Required: true
               ValidateBody: true
-  getProjectsFunction:
+  deleteProjectsFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/handlers/get-projects.getProjectsHandler
-      Description: Get user projects function
+      Handler: src/handlers/delete-project.deleteProjectHandler
+      Description: Delete project function
       Policies:
-        # Same policy for DynamoDB CRUD operations
         - DynamoDBCrudPolicy:
             TableName: !Ref ProjectsTable
       Events:
@@ -99,8 +123,12 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref SafeSchemeAPI
-            Path: /get-project
-            Method: GET
+            Path: /delete-project/{UserId}/{ProjectId}
+            RequestParameters:
+              - method.request.path.userId:
+                  Required: false
+                  Caching: false
+            Method: DELETE
             RequestModel:
               Model: Project
               Required: true
