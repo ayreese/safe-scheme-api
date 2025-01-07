@@ -3,8 +3,11 @@ import {QueryCommand} from "@aws-sdk/lib-dynamodb";
 
 // Function to get projects from table based on UserId
 export const getProjectsHandler = async (event) => {
-    const user = JSON.parse(event.body);
-    const {UserId: userId} = user;  // Correctly extracting UserId
+    /* Testing UserID */
+    const userId = event.pathParameters.UserId;
+    /* Production UserID */
+    // const userId = event.requestContext.authorizer.principalId;
+
 
     const table = process.env.PROJECTS_TABLE;  // Get table name from environment variables
 

@@ -7,11 +7,13 @@ export const createProjectHandler = async (event) => {
     const project = JSON.parse(event.body);
     const tableName = process.env.PROJECTS_TABLE;
     const {ProjectName: projectName, Tasks: tasks} = project;
-    const userId = crypto.randomBytes(8).toString('hex'); // Generate userId
+    const userId = crypto.randomBytes(8).toString('hex'); // Generate userId for testing
+    /* Production UserID */
+    // const userId = event.requestContext.authorizer.principalId;
     const projectId = crypto.randomBytes(8).toString('hex'); // Generate projectId
 
     try {
-        console.log(`Creating Project`);
+        console.log("Creating Project", project);
         await client.send(new PutCommand({
             TableName: tableName,
             Item: {
