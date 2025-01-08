@@ -201,11 +201,13 @@ Resources:
         - profile
         - email
       AllowedOAuthFlowsUserPoolClient: true
+      CallbackURLs:
+        - http://localhost:3000/callback
       ExplicitAuthFlows:
         - ALLOW_USER_SRP_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
       SupportedIdentityProviders:
         - COGNITO
-
   SafeSchemeCognitoDomain:
     Type: AWS::Cognito::UserPoolDomain
     Properties:
