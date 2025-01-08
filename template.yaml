@@ -14,6 +14,8 @@ Globals:
     Environment:
       Variables:
         PROJECTS_TABLE: !Ref ProjectsTable
+        USER_POOL_ID: !Ref SafeSchemeUserPool
+        CLIENT_ID: !Ref SafeSchemeUserPoolClient
         DYNAMODB_ENDPOINT: http://safe-scheme-db:8000
   Api:
     TracingEnabled: true
@@ -36,6 +38,15 @@ Resources:
           CognitoAuthorizer:
             UserPoolArn:
               Fn::GetAtt: [ SafeSchemeUserPool, Arn ]
+            Identity:
+              Header: Authorization  # Automatically expects the token in the 'Authorization' header
+              ValidationExpression: Bearer.*
+
+
+            AuthorizationScopes:
+              - openid
+              - profile
+              - email
       Models:
         User:
           type: object
@@ -69,13 +80,13 @@ Resources:
               type: string
             TaskId:
               type: string
+
   getProjectsFunction:
     Type: AWS::Serverless::Function
     Properties:
       Handler: src/handlers/get-projects.getProjectsHandler
       Description: Get user projects function
       Policies:
-        # Same policy for DynamoDB CRUD operations
         - DynamoDBCrudPolicy:
             TableName: !Ref ProjectsTable
       Events:
@@ -89,6 +100,7 @@ Resources:
               Model: Project
               Required: true
               ValidateBody: true
+
   createProjectFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -104,10 +116,13 @@ Resources:
             RestApiId: !Ref SafeSchemeAPI
             Path: /create-project
             Method: POST
+            RequestParameters:
+              - method.request.header.Authorization
             RequestModel:
               Model: Project
               Required: true
               ValidateBody: true
+
   deleteProjectsFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -131,23 +146,25 @@ Resources:
               Model: Project
               Required: true
               ValidateBody: true
+
   ProjectsTable:
     Type: AWS::DynamoDB::Table
     Properties:
       TableName: !Sub "ProjectsTable-${AWS::StackName}"
       AttributeDefinitions:
         - AttributeName: UserId
-          AttributeType: S  # String type for partition key
+          AttributeType: S
         - AttributeName: ProjectId
-          AttributeType: S  # String type for sort key
+          AttributeType: S
       KeySchema:
         - AttributeName: UserId
-          KeyType: HASH  # Partition key
+          KeyType: HASH
         - AttributeName: ProjectId
-          KeyType: RANGE # Sort key
+          KeyType: RANGE
       ProvisionedThroughput:
         ReadCapacityUnits: 2
         WriteCapacityUnits: 2
+
   SafeSchemeUserPool:
     Type: AWS::Cognito::UserPool
     Properties:
@@ -170,6 +187,7 @@ Resources:
         - AttributeDataType: String
           Name: email
           Required: true
+
   SafeSchemeUserPoolClient:
     Type: AWS::Cognito::UserPoolClient
     Properties:
@@ -183,35 +201,39 @@ Resources:
         - profile
         - email
       AllowedOAuthFlowsUserPoolClient: true
-      CallbackURLs:
-        - !Sub "http://localhost:3000/callback"
-      LogoutURLs:
-        - !Sub "http://localhost:3000/logout"
+      ExplicitAuthFlows:
+        - ALLOW_USER_SRP_AUTH
       SupportedIdentityProviders:
         - COGNITO
+
   SafeSchemeCognitoDomain:
     Type: AWS::Cognito::UserPoolDomain
     Properties:
-      Domain: !Sub 'safe-scheme-auth'  # You can change this to any valid domain prefix
+      Domain: !Sub 'safe-scheme-auth'
       UserPoolId: !Ref SafeSchemeUserPool
+
   ApplicationResourceGroup:
     Type: AWS::ResourceGroups::Group
     Properties:
       Name: !Sub "ApplicationInsights-SAM-${AWS::StackName}"
       ResourceQuery:
         Type: CLOUDFORMATION_STACK_1_0
+
   ApplicationInsightsMonitoring:
     Type: AWS::ApplicationInsights::Application
     Properties:
       ResourceGroupName: !Ref ApplicationResourceGroup
       AutoConfigurationEnabled: true
+
 Outputs:
   WebEndpoint:
     Description: API Gateway endpoint URL for Prod stage
     Value: !Sub "https://${SafeSchemeAPI}.execute-api.${AWS::Region}.amazonaws.com/prod/"
+
   UserPoolId:
     Value: !Ref SafeSchemeUserPool
     Description: 'Cognito User Pool ID'
+
   UserPoolClientId:
     Value: !Ref SafeSchemeUserPoolClient
     Description: 'Cognito User Pool Client ID'
