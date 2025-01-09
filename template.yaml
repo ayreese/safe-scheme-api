@@ -210,11 +210,6 @@ Resources:
         - ALLOW_REFRESH_TOKEN_AUTH
       SupportedIdentityProviders:
         - COGNITO
-  SafeSchemeCognitoDomain:
-    Type: AWS::Cognito::UserPoolDomain
-    Properties:
-      Domain: !Sub 'safe-scheme-auth'
-      UserPoolId: !Ref SafeSchemeUserPool
 
   ApplicationResourceGroup:
     Type: AWS::ResourceGroups::Group
