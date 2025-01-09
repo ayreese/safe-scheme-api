@@ -202,9 +202,9 @@ Resources:
         - email
       AllowedOAuthFlowsUserPoolClient: true
       CallbackURLs:
-        - http://localhost:3000/callback
+        - https://staging.d28alr4nb9gk3w.amplifyapp.com/callback
       LogoutURLs:
-        - http://localhost:3000/logout
+        - https://staging.d28alr4nb9gk3w.amplifyapp.com/logout
       ExplicitAuthFlows:
         - ALLOW_USER_SRP_AUTH
         - ALLOW_REFRESH_TOKEN_AUTH
