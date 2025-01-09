@@ -202,19 +202,14 @@ Resources:
         - email
       AllowedOAuthFlowsUserPoolClient: true
       CallbackURLs:
-        - http://localhost:3001/callback
+        - https://staging.d28alr4nb9gk3w.amplifyapp.com/callback
       LogoutURLs:
-        - http://localhost:3001/logout
+        - https://staging.d28alr4nb9gk3w.amplifyapp.com/logout
       ExplicitAuthFlows:
         - ALLOW_USER_SRP_AUTH
         - ALLOW_REFRESH_TOKEN_AUTH
       SupportedIdentityProviders:
         - COGNITO
-  SafeSchemeCognitoDomain:
-    Type: AWS::Cognito::UserPoolDomain
-    Properties:
-      Domain: !Sub 'safe-scheme-auth'
-      UserPoolId: !Ref SafeSchemeUserPool
 
   ApplicationResourceGroup:
     Type: AWS::ResourceGroups::Group
