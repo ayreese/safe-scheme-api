@@ -32,6 +32,8 @@ Resources:
           StatusCode: 404
         UNAUTHORIZED:
           StatusCode: 401
+          ResponseTemplates:
+            application/json: {"message": "Invalid or expired token"}
       Auth:
         DefaultAuthorizer: CognitoAuthorizer
         Authorizers:
@@ -41,8 +43,6 @@ Resources:
             Identity:
               Header: Authorization  # Automatically expects the token in the 'Authorization' header
               ValidationExpression: Bearer.*
-
-
             AuthorizationScopes:
               - openid
               - profile
