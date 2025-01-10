@@ -147,6 +147,30 @@ Resources:
               Required: true
               ValidateBody: true
 
+  editProjectFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/edit-project.editProjectHandler
+      Description: Edit project function
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ProjectsTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref SafeSchemeAPI
+            Path: /edit-project/{ProjectId}
+            RequestParameters:
+              - method.request.path.projectId:
+                  Required: false
+                  Caching: false
+            Method: PUT
+            RequestModel:
+              Model: Project
+              Required: true
+              ValidateBody: true
+
   ProjectsTable:
     Type: AWS::DynamoDB::Table
     Properties:
