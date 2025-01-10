@@ -185,9 +185,7 @@ Resources:
           KeyType: HASH
         - AttributeName: ProjectId
           KeyType: RANGE
-      ProvisionedThroughput:
-        ReadCapacityUnits: 2
-        WriteCapacityUnits: 2
+      BillingMode: PAY_PER_REQUEST
 
   SafeSchemeUserPool:
     Type: AWS::Cognito::UserPool
