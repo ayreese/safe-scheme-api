@@ -136,7 +136,7 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref SafeSchemeAPI
-            Path: /delete-project/{UserId}/{ProjectId}
+            Path: /delete-project/{ProjectId}
             RequestParameters:
               - method.request.path.userId:
                   Required: false
