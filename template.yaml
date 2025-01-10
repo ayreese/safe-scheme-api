@@ -168,6 +168,29 @@ Resources:
               Model: Project
               Required: true
               ValidateBody: true
+  editTaskFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/edit-task.editTaskHandler
+      Description: Edit task function
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ProjectsTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref SafeSchemeAPI
+            Path: /edit-task/{ProjectId}/{TaskId}
+            RequestParameters:
+              - method.request.path.projectId.taskId:
+                  Required: false
+                  Caching: false
+            Method: PUT
+            RequestModel:
+              Model: Task
+              Required: true
+              ValidateBody: true
 
   ProjectsTable:
     Type: AWS::DynamoDB::Table
