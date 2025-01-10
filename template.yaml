@@ -117,7 +117,7 @@ Resources:
             Path: /create-project
             Method: POST
             RequestParameters:
-              - method.request.header.Authorization
+              - method.request.body
             RequestModel:
               Model: Project
               Required: true
