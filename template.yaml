@@ -105,7 +105,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: src/handlers/create-project.createProjectHandler
-      Description: Create project function
+      Description: Create project for authenticated user
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ProjectsTable

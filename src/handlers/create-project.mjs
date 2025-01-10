@@ -1,3 +1,8 @@
+/*
+To create a userID to test function use:
+const userId = crypto.randomBytes(8).toString('hex');
+*/
+
 import {client} from "../../utils/dynamoClient.mjs";
 import crypto from 'crypto';
 import {PutCommand} from "@aws-sdk/lib-dynamodb";
@@ -5,12 +10,10 @@ import {tasksHelper} from "../../functions/tasks-helper.mjs";
 
 export const createProjectHandler = async (event) => {
     const project = JSON.parse(event.body);
-    const tableName = process.env.PROJECTS_TABLE;
+    const tableName = process.env.PROJECTS_TABLE; // DynamoDB table in SAM template
     const {ProjectName: projectName, Tasks: tasks} = project;
-    const userId = crypto.randomBytes(8).toString('hex'); // Generate userId for testing
-    /* Production UserID */
-    // const userId = event.requestContext.authorizer.principalId;
-    const projectId = crypto.randomBytes(8).toString('hex'); // Generate projectId
+    const userId = event.requestContext.authorizer.claims.sub; // Get userId from event provided by cognito
+    const projectId = crypto.randomUUID() // Generate projectId
 
     try {
         console.log("Creating Project", project);
