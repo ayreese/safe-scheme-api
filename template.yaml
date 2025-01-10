@@ -116,8 +116,6 @@ Resources:
             RestApiId: !Ref SafeSchemeAPI
             Path: /create-project
             Method: POST
-            RequestParameters:
-              - method.request.body
             RequestModel:
               Model: Project
               Required: true
