@@ -181,7 +181,7 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref SafeSchemeAPI
-            Path: /edit-task/{ProjectId}/{TaskId}
+            Path: /edit-task/{ProjectId}
             RequestParameters:
               - method.request.path.projectId.taskId:
                   Required: false
