@@ -17,8 +17,6 @@ Globals:
         USER_POOL_ID: !Ref SafeSchemeUserPool
         CLIENT_ID: !Ref SafeSchemeUserPoolClient
         DYNAMODB_ENDPOINT: http://safe-scheme-db:8000
-  Api:
-    TracingEnabled: true
 
 Resources:
   SafeSchemeAPI:
@@ -27,6 +25,7 @@ Resources:
       Name: SafeSchemeAPI
       Description: API for Safe Scheme Application
       StageName: prod
+      TracingEnabled: true
       GatewayResponses:
         DEFAULT_4XX:
           StatusCode: 404
@@ -41,45 +40,74 @@ Resources:
             UserPoolArn:
               Fn::GetAtt: [ SafeSchemeUserPool, Arn ]
             Identity:
-              Header: Authorization  # Automatically expects the token in the 'Authorization' header
+              Header: Authorization
               ValidationExpression: Bearer.*
             AuthorizationScopes:
               - openid
               - profile
               - email
       Models:
-        User:
-          type: object
-          required:
-            - UserId
-          properties:
-            UserId:
-              type: string
         Project:
           type: object
           required:
-            - UserId
-            - ProjectId
+            - Project
           properties:
             UserId:
               type: string
+            Project:
+              type: string
             ProjectId:
               type: string
-            ProjectName:
-              type: string
             Tasks:
-              type: list
+              type: array
+              items:
+                $ref: "#/models/Task"
+            Status:
+              type: boolean
         Task:
           type: object
           required:
-            - ProjectId
-            - TaskId
-            - TaskName
+            - Task
           properties:
-            ProjectId:
-              type: string
             TaskId:
               type: string
+            Status:
+              type: boolean
+            Subtasks:
+              type: array
+              items:
+                $ref: "#/models/Subtask"
+        SubTask:
+          type: object
+          required:
+            - Subtask
+          properties:
+            SubtaskId:
+              type: string
+            Subtask:
+              type string
+            Status:
+              type: boolean
+
+  createProjectFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/create-project.createProjectHandler
+      Description: Create project for authenticated user
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ProjectsTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref SafeSchemeAPI
+            Path: /create-project
+            Method: POST
+            RequestModel:
+              Model: Project
+              Required: true
+              ValidateBody: true
 
   getProjectsFunction:
     Type: AWS::Serverless::Function
@@ -101,11 +129,11 @@ Resources:
               Required: true
               ValidateBody: true
 
-  createProjectFunction:
+  editProjectFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/handlers/create-project.createProjectHandler
-      Description: Create project for authenticated user
+      Handler: src/handlers/edit-project.editProjectHandler
+      Description: Edit project function
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ProjectsTable
@@ -114,8 +142,12 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref SafeSchemeAPI
-            Path: /create-project
-            Method: POST
+            Path: /edit-project/{ProjectId}
+            RequestParameters:
+              - method.request.path.projectId:
+                  Required: false
+                  Caching: false
+            Method: PUT
             RequestModel:
               Model: Project
               Required: true
@@ -145,29 +177,7 @@ Resources:
               Required: true
               ValidateBody: true
 
-  editProjectFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler: src/handlers/edit-project.editProjectHandler
-      Description: Edit project function
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref ProjectsTable
-      Events:
-        Api:
-          Type: Api
-          Properties:
-            RestApiId: !Ref SafeSchemeAPI
-            Path: /edit-project/{ProjectId}
-            RequestParameters:
-              - method.request.path.projectId:
-                  Required: false
-                  Caching: false
-            Method: PUT
-            RequestModel:
-              Model: Project
-              Required: true
-              ValidateBody: true
+
 
   ProjectsTable:
     Type: AWS::DynamoDB::Table
