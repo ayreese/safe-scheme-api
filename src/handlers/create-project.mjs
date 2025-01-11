@@ -11,9 +11,8 @@ import {tasksHelper} from "../../functions/tasks-helper.mjs";
 export const createProjectHandler = async (event) => {
     const project = JSON.parse(event.body);
     const tableName = process.env.PROJECTS_TABLE; // DynamoDB table in SAM template
-    const {ProjectName: projectName, Tasks: tasks} = project;
+    const {Project: projectName, Tasks: tasks, Status: status} = project;
     const userId = event.requestContext.authorizer.claims.sub; // Get userId from event provided by cognito
-    const projectId = crypto.randomUUID() // Generate projectId
 
     try {
         console.log("Creating Project", project);
@@ -21,8 +20,9 @@ export const createProjectHandler = async (event) => {
             TableName: tableName,
             Item: {
                 UserId: userId,
-                ProjectId: projectId,
-                ProjectName: projectName,
+                ProjectId: crypto.randomUUID(),
+                Project: projectName,
+                Status: status,
                 Tasks: tasksHelper(tasks),
             }
         }));
