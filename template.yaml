@@ -77,7 +77,7 @@ Resources:
               type: array
               items:
                 $ref: "#/models/Subtask"
-        SubTask:
+        Subtask:
           type: object
           required:
             - Subtask
