@@ -71,6 +71,8 @@ Resources:
           properties:
             TaskId:
               type: string
+            Task:
+              type: string
             Status:
               type: boolean
             Subtasks:
