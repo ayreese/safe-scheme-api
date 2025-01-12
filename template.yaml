@@ -61,7 +61,7 @@ Resources:
             Tasks:
               type: array
               items:
-                $ref: "#/Task"
+                $ref: "#/Models/Task"
             Status:
               type: boolean
         Task:
@@ -78,7 +78,7 @@ Resources:
             Subtasks:
               type: array
               items:
-                $ref: "#/Subtask"
+                $ref: "#/Models/Subtask"
         Subtask:
           type: object
           required:
