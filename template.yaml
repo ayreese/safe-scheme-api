@@ -126,10 +126,6 @@ Resources:
             RestApiId: !Ref SafeSchemeAPI
             Path: /get-projects/{UserId}
             Method: GET
-            RequestModel:
-              Model: Project
-              Required: true
-              ValidateBody: true
 
   editProjectFunction:
     Type: AWS::Serverless::Function
@@ -145,11 +141,11 @@ Resources:
           Properties:
             RestApiId: !Ref SafeSchemeAPI
             Path: /edit-project/{ProjectId}
-            RequestParameters:
-              - method.request.path.projectId:
-                  Required: false
-                  Caching: false
             Method: PUT
+            RequestParameters:
+              - method.request.path.ProjectId:
+                  Required: true
+                  Caching: false
             RequestModel:
               Model: Project
               Required: true
@@ -169,16 +165,11 @@ Resources:
           Properties:
             RestApiId: !Ref SafeSchemeAPI
             Path: /delete-project/{ProjectId}
-            RequestParameters:
-              - method.request.path.userId:
-                  Required: false
-                  Caching: false
             Method: DELETE
-            RequestModel:
-              Model: Project
-              Required: true
-              ValidateBody: true
-
+            RequestParameters:
+              - method.request.path.ProjectId:
+                  Required: true
+                  Caching: false
 
 
   ProjectsTable:
