@@ -87,7 +87,7 @@ Resources:
             SubtaskId:
               type: string
             Subtask:
-              type string
+              type: string
             Status:
               type: boolean
 
