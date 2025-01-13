@@ -1,30 +1,44 @@
 {
-  "ProjectName": "Make a Burger",
+  "Project": "Make a Combo Meal",
   "Status": false,
-  "Tasks": [
-    {
-      "Task": "Add condiments",
+  "Tasks":  {
+    "49584-24352-23452": {
+      "Description": "Add condiments",
       "Status": false,
-      "Subtasks": [
-        {
-          "Subtask": "add cheese",
-          "status": false
+      "Subtasks": {
+        "1134135-134151-1134": {
+          "Description": "Add Ketchup",
+          "Status": false
         },
-        {
-          "Subtask": "add ketchup",
-          "status": false
+        "1134135-134451-1134": {
+          "Description": "Add Mustard",
+          "Status": false
         },
-        {
-          "Subtask": "extra mustard",
-          "status": false
-        },
-        {
-          "Subtask": "no onion",
-          "status": false
+        "1130135-134151-1134": {
+          "Description": "Extra Pickle",
+          "Status": false
         }
-      ]
+      }
+    },
+    "4523452346-245-2451245-14": {
+      "Description": "Add Sides",
+      "Status": false,
+      "Subtasks": {
+        "1134135-134151-1134": {
+          "Description": "Add Fries",
+          "Status": false
+        },
+        "1134135-134451-1134": {
+          "Description": "Add Drink",
+          "Status": false
+        },
+        "1130135-134151-1134": {
+          "Description": "Coca-Cola",
+          "Status": false
+        }
+      }
     }
-  ]
+  }
 }
 
 
