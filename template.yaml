@@ -32,7 +32,7 @@ Resources:
         UNAUTHORIZED:
           StatusCode: 401
           ResponseTemplates:
-            application/json: {"message": "Invalid or expired token"}
+            application/json: { "message": "Invalid or expired token" }
       Auth:
         DefaultAuthorizer: CognitoAuthorizer
         Authorizers:
@@ -58,12 +58,31 @@ Resources:
               type: string
             ProjectId:
               type: string
+            Status:
+              type: boolean
             Tasks:
               type: array
               items:
-                $ref: "#/Models/Task"
-            Status:
-              type: boolean
+                type: object
+                properties:
+                  TaskId:
+                    type: string
+                  Task:
+                    type: string
+                  Status:
+                    type: boolean
+                  Subtasks:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        SubtaskId:
+                          type: string
+                        Subtask:
+                          type: string
+                        Status:
+                          type: boolean
+
         Task:
           type: object
           required:
@@ -78,7 +97,14 @@ Resources:
             Subtasks:
               type: array
               items:
-                $ref: "#/Models/Subtask"
+                type: object
+                properties:
+                  SubtaskId:
+                    type: string
+                  Subtask:
+                    type: string
+                  Status:
+                    type: boolean
         Subtask:
           type: object
           required:
