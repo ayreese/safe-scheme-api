@@ -1,8 +1,30 @@
 {
-  "ProjectName": "Project Burger",
+  "ProjectName": "Make a Burger",
+  "Status": false,
   "Tasks": [
-    {"name": "Make burgers", "status": "false"},
-    {"name": "add cheese", "status": "false"},
-    {"name": "no onion", "status": "false"}
+    {
+      "Task": "Add condiments",
+      "Status": false,
+      "Subtasks": [
+        {
+          "Subtask": "add cheese",
+          "status": false
+        },
+        {
+          "Subtask": "add ketchup",
+          "status": false
+        },
+        {
+          "Subtask": "extra mustard",
+          "status": false
+        },
+        {
+          "Subtask": "no onion",
+          "status": false
+        }
+      ]
+    }
   ]
 }
+
+

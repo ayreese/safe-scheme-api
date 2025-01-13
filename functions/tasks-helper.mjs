@@ -7,10 +7,14 @@ export const tasksHelper = (tasks) => {
         return tasks
 
     } else {
-        const taskID = crypto.randomBytes(8).toString('hex');
         return tasks.map(task => ({
-            id: taskID,  // Add or override the 'id' property
-            ...task      // Spread the properties of the existing task
+            TaskId: crypto.randomUUID(),
+            Task: task.Task,
+            Status: task.Status,
+            SubTasks: task.Subtasks.map(subtask => ({
+                SubtaskId: crypto.randomUUID(),
+                ...subtask,
+            }))
         }));
     }
 

@@ -17,8 +17,6 @@ Globals:
         USER_POOL_ID: !Ref SafeSchemeUserPool
         CLIENT_ID: !Ref SafeSchemeUserPoolClient
         DYNAMODB_ENDPOINT: http://safe-scheme-db:8000
-  Api:
-    TracingEnabled: true
 
 Resources:
   SafeSchemeAPI:
@@ -27,13 +25,14 @@ Resources:
       Name: SafeSchemeAPI
       Description: API for Safe Scheme Application
       StageName: prod
+      TracingEnabled: true
       GatewayResponses:
         DEFAULT_4XX:
           StatusCode: 404
         UNAUTHORIZED:
           StatusCode: 401
           ResponseTemplates:
-            application/json: {"message": "Invalid or expired token"}
+            application/json: { "message": "Invalid or expired token" }
       Auth:
         DefaultAuthorizer: CognitoAuthorizer
         Authorizers:
@@ -41,65 +40,82 @@ Resources:
             UserPoolArn:
               Fn::GetAtt: [ SafeSchemeUserPool, Arn ]
             Identity:
-              Header: Authorization  # Automatically expects the token in the 'Authorization' header
+              Header: Authorization
               ValidationExpression: Bearer.*
             AuthorizationScopes:
               - openid
               - profile
               - email
       Models:
-        User:
-          type: object
-          required:
-            - UserId
-          properties:
-            UserId:
-              type: string
         Project:
           type: object
           required:
-            - UserId
-            - ProjectId
+            - Project
           properties:
             UserId:
               type: string
+            Project:
+              type: string
             ProjectId:
               type: string
-            ProjectName:
-              type: string
+            Status:
+              type: boolean
             Tasks:
-              type: list
+              type: array
+              items:
+                type: object
+                properties:
+                  TaskId:
+                    type: string
+                  Task:
+                    type: string
+                  Status:
+                    type: boolean
+                  Subtasks:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        SubtaskId:
+                          type: string
+                        Subtask:
+                          type: string
+                        Status:
+                          type: boolean
+
         Task:
           type: object
           required:
-            - ProjectId
-            - TaskId
-            - TaskName
+            - Task
           properties:
-            ProjectId:
-              type: string
             TaskId:
               type: string
-
-  getProjectsFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler: src/handlers/get-projects.getProjectsHandler
-      Description: Get user projects function
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref ProjectsTable
-      Events:
-        Api:
-          Type: Api
-          Properties:
-            RestApiId: !Ref SafeSchemeAPI
-            Path: /get-projects/{UserId}
-            Method: GET
-            RequestModel:
-              Model: Project
-              Required: true
-              ValidateBody: true
+            Task:
+              type: string
+            Status:
+              type: boolean
+            Subtasks:
+              type: array
+              items:
+                type: object
+                properties:
+                  SubtaskId:
+                    type: string
+                  Subtask:
+                    type: string
+                  Status:
+                    type: boolean
+        Subtask:
+          type: object
+          required:
+            - Subtask
+          properties:
+            SubtaskId:
+              type: string
+            Subtask:
+              type: string
+            Status:
+              type: boolean
 
   createProjectFunction:
     Type: AWS::Serverless::Function
@@ -121,11 +137,11 @@ Resources:
               Required: true
               ValidateBody: true
 
-  deleteProjectsFunction:
+  getProjectsFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/handlers/delete-project.deleteProjectHandler
-      Description: Delete project function
+      Handler: src/handlers/get-projects.getProjectsHandler
+      Description: Get user projects function
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ProjectsTable
@@ -134,16 +150,8 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref SafeSchemeAPI
-            Path: /delete-project/{ProjectId}
-            RequestParameters:
-              - method.request.path.userId:
-                  Required: false
-                  Caching: false
-            Method: DELETE
-            RequestModel:
-              Model: Project
-              Required: true
-              ValidateBody: true
+            Path: /get-projects/{UserId}
+            Method: GET
 
   editProjectFunction:
     Type: AWS::Serverless::Function
@@ -159,11 +167,11 @@ Resources:
           Properties:
             RestApiId: !Ref SafeSchemeAPI
             Path: /edit-project/{ProjectId}
-            RequestParameters:
-              - method.request.path.projectId:
-                  Required: false
-                  Caching: false
             Method: PUT
+            RequestParameters:
+              - method.request.path.ProjectId:
+                  Required: true
+                  Caching: false
             RequestModel:
               Model: Project
               Required: true
@@ -191,6 +199,27 @@ Resources:
               Model: Task
               Required: true
               ValidateBody: true
+
+  deleteProjectsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/delete-project.deleteProjectHandler
+      Description: Delete project function
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ProjectsTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref SafeSchemeAPI
+            Path: /delete-project/{ProjectId}
+            Method: DELETE
+            RequestParameters:
+              - method.request.path.ProjectId:
+                  Required: true
+                  Caching: false
+
 
   ProjectsTable:
     Type: AWS::DynamoDB::Table
