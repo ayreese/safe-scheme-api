@@ -197,6 +197,30 @@ Resources:
                   Required: true
                   Caching: false
 
+  createTaskFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/create-task.createTaskHandler
+      Description: Create task for a project for an authenticated user
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ProjectsTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref SafeSchemeAPI
+            Path: /create-task/{ProjectId}
+            Method: POST
+            RequestParameters:
+              - method.request.path.ProjectId:
+                  Required: true
+                  Caching: false
+            RequestModel:
+              Model: Task
+              Required: true
+              ValidateBody: true
+
 
   ProjectsTable:
     Type: AWS::DynamoDB::Table
