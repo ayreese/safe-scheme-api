@@ -6,12 +6,11 @@ const userId = crypto.randomBytes(8).toString('hex');
 import {client} from "../../utils/dynamoClient.mjs";
 import crypto from 'crypto';
 import {PutCommand} from "@aws-sdk/lib-dynamodb";
-import {tasksHelper} from "../../functions/tasks-helper.mjs";
 
 export const createProjectHandler = async (event) => {
     const project = JSON.parse(event.body);
     const tableName = process.env.PROJECTS_TABLE; // DynamoDB table in SAM template
-    const {Project: projectName, Tasks: tasks, Status: status} = project;
+    const {Project: projectName, Status: status} = project;
     const userId = event.requestContext.authorizer.claims.sub; // Get userId from event provided by cognito
 
     try {
@@ -23,7 +22,7 @@ export const createProjectHandler = async (event) => {
                 ProjectId: crypto.randomUUID(),
                 Project: projectName,
                 Status: status,
-                Tasks: tasksHelper(tasks),
+                Tasks: {},
             }
         }));
         console.info(`Successfully created project: ${projectName}`);
