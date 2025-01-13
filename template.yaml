@@ -82,7 +82,6 @@ Resources:
                           type: string
                         Status:
                           type: boolean
-
         Task:
           type: object
           required:
@@ -176,6 +175,7 @@ Resources:
               Model: Project
               Required: true
               ValidateBody: true
+
   editTaskFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -189,10 +189,10 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref SafeSchemeAPI
-            Path: /edit-task/{ProjectId}
+            Path: /edit-task/{ProjectId}/{TaskId}
             RequestParameters:
-              - method.request.path.projectId.taskId:
-                  Required: false
+              - method.request.path.ProjectId.TaskId:
+                  Required: true
                   Caching: false
             Method: PUT
             RequestModel:
