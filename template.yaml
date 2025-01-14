@@ -24,6 +24,7 @@ Resources:
     Properties:
       Name: SafeSchemeAPI
       Description: API for Safe Scheme Application
+      OpenApiVersion: 3.0.1AWS::Serverless::Api
       StageName: prod
       TracingEnabled: true
       GatewayResponses:
@@ -61,27 +62,25 @@ Resources:
             Status:
               type: boolean
             Tasks:
-              type: array
-              items:
-                type: object
-                properties:
-                  TaskId:
-                    type: string
-                  Task:
-                    type: string
-                  Status:
-                    type: boolean
-                  Subtasks:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        SubtaskId:
-                          type: string
-                        Subtask:
-                          type: string
-                        Status:
-                          type: boolean
+              type: object
+              properties:
+                TaskId:
+                  type: string
+                Task:
+                  type: string
+                Status:
+                  type: boolean
+                Subtasks:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      SubtaskId:
+                        type: string
+                      Subtask:
+                        type: string
+                      Status:
+                        type: boolean
         Task:
           type: object
           required:
@@ -94,16 +93,14 @@ Resources:
             Status:
               type: boolean
             Subtasks:
-              type: array
-              items:
-                type: object
-                properties:
-                  SubtaskId:
-                    type: string
-                  Subtask:
-                    type: string
-                  Status:
-                    type: boolean
+              type: object
+              properties:
+                SubtaskId:
+                  type: string
+                Subtask:
+                  type: string
+                Status:
+                  type: boolean
         Subtask:
           type: object
           required:
