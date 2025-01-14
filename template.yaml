@@ -24,7 +24,6 @@ Resources:
     Properties:
       Name: SafeSchemeAPI
       Description: API for Safe Scheme Application
-      OpenApiVersion: 3.0.1AWS::Serverless::Api
       StageName: prod
       TracingEnabled: true
       GatewayResponses:
