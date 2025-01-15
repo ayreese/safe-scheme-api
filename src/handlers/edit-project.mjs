@@ -1,25 +1,25 @@
 import {client} from "../../utils/dynamoClient.mjs";
 import {UpdateCommand} from "@aws-sdk/lib-dynamodb";
-// import {tasksHelper} from "../../functions/tasks-helper.mjs";
 
 export const editProjectHandler = async (event) => {
-    const project = JSON.parse(event.body);
     const tableName = process.env.PROJECTS_TABLE;
+    const projectParameters = JSON.parse(event.body);
+    const userId = event.requestContext.authorizer.claims.sub;
     const projectId = event.pathParameters.ProjectId;
-    const {ProjectName: projectName} = project;
+    const {Project: project} = projectParameters;
 
     try {
         const data = await client.send(new UpdateCommand({
             TableName: tableName,
             Key: {
-                UserId: "e1df74f8610de4bd",
+                UserId: userId,
                 ProjectId: projectId,
             },
-            ConditionExpression: "ProjectId = :projectId",
-            UpdateExpression: "set ProjectName = :projectName",
+            ConditionExpression: "ProjectId = :ProjectId",
+            UpdateExpression: "SET Project = :Project",
             ExpressionAttributeValues: {
-                ":projectId": projectId,
-                ":projectName": projectName,
+                ":ProjectId": projectId,
+                ":Project": project,
             }
         }))
         return {
@@ -27,6 +27,9 @@ export const editProjectHandler = async (event) => {
             body: JSON.stringify({data: data})
         }
     } catch (error) {
-        console.error(error);
+        return {
+            statusCode: 500,
+            body: JSON.stringify({error: error.message})
+        }
     }
 };
