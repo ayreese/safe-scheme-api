@@ -14,7 +14,7 @@ export const createProjectHandler = async (event) => {
     const userId = event.requestContext.authorizer.claims.sub; // Get userId from event provided by cognito
 
     try {
-        console.log("Creating Project", project);
+        // Put item into DynamoDB database using PutCommand
         await client.send(new PutCommand({
             TableName: tableName,
             Item: {
@@ -25,13 +25,13 @@ export const createProjectHandler = async (event) => {
                 Tasks: {},
             }
         }));
-        console.info(`Successfully created project: ${projectName}`);
+        // Return 201 and message if successful
         return {
             statusCode: 201,
             body: JSON.stringify({message: "Created project"})
         };
     } catch (e) {
-        console.error("Error creating project", e);
+        // Return 500 on failure
         return {
             statusCode: 500,
             body: JSON.stringify({message: "Failed to create project", error: e.message})
