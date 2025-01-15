@@ -37,6 +37,9 @@ export const createTaskHandler = async (event) => {
             body: JSON.stringify({data: data})
         }
     } catch (error) {
-        console.error(error);
+        return {
+            statusCode: 500,
+            body: JSON.stringify({message: "Failed to create task", error: error.message})
+        };
     }
 };
