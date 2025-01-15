@@ -32,7 +32,7 @@ export const createSubtaskHandler = async (event) => {
             ExpressionAttributeValues: {
                 ":SubtaskData": {
                     "Description": description,
-                    ":Status": status,
+                    "Status": status,
                 }
             },
         }));
