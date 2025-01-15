@@ -9,9 +9,9 @@ export const getProjectsHandler = async (event) => {
         // Query DynamoDB for user data
         const {Items} = await client.send(new QueryCommand({
             TableName: table,
-            KeyConditionExpression: "UserId = :userId",
+            KeyConditionExpression: "UserId = :UserId",
             ExpressionAttributeValues: {
-                ":userId": userId,
+                ":UserId": userId,
             },
         }));
         // Switch based on Items
