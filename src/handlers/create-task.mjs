@@ -17,19 +17,18 @@ export const createTaskHandler = async (event) => {
                 UserId: userId,
                 ProjectId: projectId,
             },
-            ConditionExpression: "ProjectId = :projectId",
-            UpdateExpression: "SET #tasksMap.#taskId = :taskData",
+            ConditionExpression: "ProjectId = :ProjectId",
+            UpdateExpression: "SET Tasks.#TaskId = :TaskData",
             ExpressionAttributeNames: {
-                "#tasksMap": "Tasks",
-                "#taskId": taskId,
+                "#TaskId": taskId,
             },
             ExpressionAttributeValues: {
-                ":taskData": {
+                ":TaskData": {
                     "Description": TaskDescription,
                     "Status": false,
                     "Subtasks": {}
                 },
-                ":projectId": projectId,
+                ":ProjectId": projectId,
             }
         }))
         return {
