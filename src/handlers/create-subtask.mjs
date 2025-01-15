@@ -24,13 +24,13 @@ export const createSubtaskHandler = async (event) => {
                 ProjectId: projectId,
             },
             ConditionExpression: "attribute_exists(Tasks.#TaskId)",
-            UpdateExpression: "SET Tasks.#TaskId.Subtasks.#SubtaskId = :subtaskData",
+            UpdateExpression: "SET Tasks.#TaskId.Subtasks.#SubtaskId = :SubtaskData",
             ExpressionAttributeNames: {
                 "#TaskId": taskId,
                 "#SubtaskId": subtaskId,
             },
             ExpressionAttributeValues: {
-                ":subtaskData": {
+                ":SubtaskData": {
                     "Description": description,
                     ":Status": status,
                 }
