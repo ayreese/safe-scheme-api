@@ -287,6 +287,30 @@ Resources:
               Required: true
               ValidateBody: true
 
+  editSubtaskFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/edit-subtask.editSubtaskHandler
+      Description: Edit subtask function
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ProjectsTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref SafeSchemeAPI
+            Path: /edit-subtask/{ProjectId}/{TaskId}/{SubtaskId}
+            RequestParameters:
+              - method.request.path.ProjectId.TaskId.SubtaskId:
+                  Required: true
+                  Caching: false
+            Method: PUT
+            RequestModel:
+              Model: Subtask
+              Required: true
+              ValidateBody: true
+
   #DynamoDB Tables
   ProjectsTable:
     Type: AWS::DynamoDB::Table

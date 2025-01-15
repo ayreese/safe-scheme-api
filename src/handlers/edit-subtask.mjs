@@ -10,7 +10,6 @@ export const editSubtaskHandler = async (event) => {
     const taskId = event.pathParameters.TaskId;
     const subtaskId = event.pathParameters.SubtaskId;
 
-
     try {
         const data = await client.send(new UpdateCommand({
             TableName: tableName,
@@ -18,7 +17,7 @@ export const editSubtaskHandler = async (event) => {
                 UserId: userId,
                 ProjectId: projectId,
             },
-            UpdateExpression: 'SET Tasks.#TaskId.Subtask.#SubtaskId.Description = :Description, Tasks.#TaskId.Subtask.#SubtaskId.#Status = :Status',
+            UpdateExpression: 'SET Tasks.#TaskId.Subtasks.#SubtaskId.Description = :Description, Tasks.#TaskId.Subtasks.#SubtaskId.#Status = :Status',
             ExpressionAttributeNames: {
                 "#TaskId": taskId,
                 "#SubtaskId": subtaskId,
