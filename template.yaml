@@ -263,6 +263,29 @@ Resources:
                   Caching: false
 
   #Subtasks CRUD operations
+  createSubtaskFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/create-subtask.createSubtaskHandler
+      Description: Create subtask for a project for an authenticated user
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ProjectsTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref SafeSchemeAPI
+            Path: /create-subtask/{ProjectId}/{TaskId}
+            Method: POST
+            RequestParameters:
+              - method.request.path.ProjectId.TaskId:
+                  Required: true
+                  Caching: false
+            RequestModel:
+              Model: Subtask
+              Required: true
+              ValidateBody: true
 
   #DynamoDB Tables
   ProjectsTable:
