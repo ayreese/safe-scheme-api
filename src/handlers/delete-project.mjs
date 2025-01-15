@@ -20,17 +20,11 @@ export const deleteProjectHandler = async (event) => {
         }))
         return {
             statusCode: 204,
-            headers: {
-                'Content-Type': 'application/json'
-            }
+
         };
     } catch (error) {
-        console.log("ERROR:", error);
         return {
             statusCode: 404,
-            headers: {
-                'Content-Type': 'application/json'
-            }
         }
     }
 };
