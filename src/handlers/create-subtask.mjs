@@ -36,13 +36,11 @@ export const createSubtaskHandler = async (event) => {
                 }
             },
         }));
-        console.info(`Successfully created subtask: ${description}`);
         return {
             statusCode: 201,
             body: JSON.stringify({message: "Created subtask"})
         };
     } catch (e) {
-        console.error("Error creating subtask", e);
         return {
             statusCode: 500,
             body: JSON.stringify({message: "Failed to create subtask", error: e.message})
