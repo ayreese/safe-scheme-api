@@ -13,9 +13,9 @@ export const deleteProjectHandler = async (event) => {
                 UserId: userId,
                 ProjectId: projectId,
             },
-            ConditionExpression: "ProjectId = :projectId",
+            ConditionExpression: "ProjectId = :ProjectId",
             ExpressionAttributeValues: {
-                ":projectId": projectId,
+                ":ProjectId": projectId,
             }
         }))
         return {
