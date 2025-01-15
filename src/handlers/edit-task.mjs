@@ -18,10 +18,9 @@ export const editTaskHandler = async (event) => {
                 UserId: userId,
                 ProjectId: projectId,
             },
-            // ConditionExpression: 'Tasks.taskId = :taskId',
-            UpdateExpression: 'SET Tasks.#taskId.Description = :Description, Tasks.#taskId.#Status = :Status',
+            UpdateExpression: 'SET Tasks.#TaskId.Description = :Description, Tasks.#TaskId.#Status = :Status',
             ExpressionAttributeNames: {
-                "#taskId": taskId,
+                "#TaskId": taskId,
                 "#Status": "Status",
             },
             ExpressionAttributeValues: {
@@ -34,6 +33,10 @@ export const editTaskHandler = async (event) => {
             body: JSON.stringify({data: data})
         }
     } catch (error) {
-        console.error(error);
+        return {
+            statusCode: 500,
+            body: JSON.stringify({message: `Task ${taskId} could not be updated`})
+        }
+
     }
 };
