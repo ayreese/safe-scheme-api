@@ -310,6 +310,7 @@ Resources:
               Model: Subtask
               Required: true
               ValidateBody: true
+
   deleteSubtaskFunction:
     Type: AWS::Serverless::Function
     Properties:

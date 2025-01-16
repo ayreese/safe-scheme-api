@@ -3,10 +3,10 @@ import {UpdateCommand} from "@aws-sdk/lib-dynamodb";
 
 export const deleteSubtaskHandler = async (event) => {
     const tableName = process.env.PROJECTS_TABLE;
-    const userId = event.pathParameters.UserId
-    const projectId = event.pathParameters.ProjectId
-    const taskId = event.pathParameters.TaskId
-    const subtaskId = event.pathParameters.SubtaskId
+    const userId = event.requestContext.authorizer.claims.sub;
+    const projectId = event.pathParameters.ProjectId;
+    const taskId = event.pathParameters.TaskId;
+    const subtaskId = event.pathParameters.SubtaskId;
 
 
     try {
