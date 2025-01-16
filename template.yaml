@@ -310,6 +310,25 @@ Resources:
               Model: Subtask
               Required: true
               ValidateBody: true
+  deleteSubtaskFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/delete-subtask.deleteSubtaskHandler
+      Description: Delete task function
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ProjectsTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref SafeSchemeAPI
+            Path: /delete-subtask/{ProjectId}/{TaskId}/{SubtaskId}
+            Method: DELETE
+            RequestParameters:
+              - method.request.path.ProjectId.TaskId.SubtaskId:
+                  Required: true
+                  Caching: false
 
   #DynamoDB Tables
   ProjectsTable:
