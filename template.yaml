@@ -371,6 +371,15 @@ Resources:
         - AttributeDataType: String
           Name: email
           Required: true
+          Mutable: true
+        - AttributeDataType: String
+          Name: First Name
+          Required: true
+          Mutable: true
+        - AttributeDataType: String
+          Name: Last Name
+          Required: true
+          Mutable: true
 
   SafeSchemeUserPoolClient:
     Type: AWS::Cognito::UserPoolClient
@@ -385,12 +394,9 @@ Resources:
         - profile
         - email
       AllowedOAuthFlowsUserPoolClient: true
-      CallbackURLs:
-        - https://staging.d28alr4nb9gk3w.amplifyapp.com/callback
-      LogoutURLs:
-        - https://staging.d28alr4nb9gk3w.amplifyapp.com/logout
       ExplicitAuthFlows:
         - ALLOW_USER_SRP_AUTH
+        - ALLOW_USER_PASSWORD_AUTH
         - ALLOW_REFRESH_TOKEN_AUTH
       SupportedIdentityProviders:
         - COGNITO
