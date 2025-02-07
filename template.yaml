@@ -373,13 +373,17 @@ Resources:
           Required: true
           Mutable: true
         - AttributeDataType: String
-          Name: First_Name
-          Required: true
+          Name: custom:First_Name
           Mutable: true
+          NumberAttributeConstraints:
+            MaxValue: "16"
+            MinValue: "2"
         - AttributeDataType: String
-          Name: Last_Name
-          Required: true
+          Name: custom:Last_Name
           Mutable: true
+          NumberAttributeConstraints:
+            MaxValue: "16"
+            MinValue: "2"
 
   SafeSchemeUserPoolClient:
     Type: AWS::Cognito::UserPoolClient
