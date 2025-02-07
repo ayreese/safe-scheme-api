@@ -373,11 +373,11 @@ Resources:
           Required: true
           Mutable: true
         - AttributeDataType: String
-          Name: First Name
+          Name: First_Name
           Required: true
           Mutable: true
         - AttributeDataType: String
-          Name: Last Name
+          Name: Last_Name
           Required: true
           Mutable: true
 
