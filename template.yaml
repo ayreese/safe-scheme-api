@@ -373,13 +373,15 @@ Resources:
           Required: true
           Mutable: true
         - AttributeDataType: String
-          Name: custom:First_Name
+          Name: given_name
+          Required: true
           Mutable: true
           NumberAttributeConstraints:
             MaxValue: "16"
             MinValue: "2"
         - AttributeDataType: String
-          Name: custom:Last_Name
+          Name: family_name
+          Required: true
           Mutable: true
           NumberAttributeConstraints:
             MaxValue: "16"
