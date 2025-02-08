@@ -353,6 +353,8 @@ Resources:
     Type: AWS::Cognito::UserPool
     Properties:
       UserPoolName: SafeSchemeUserPool
+      AutoVerifiedAttributes:
+        - email
       AccountRecoverySetting:
         RecoveryMechanisms:
           - Name: verified_email
