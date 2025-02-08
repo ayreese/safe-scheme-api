@@ -387,7 +387,7 @@ Resources:
       EmailConfiguration:
         EmailSendingAccount: COGNITO_DEFAULT
       VerificationMessageTemplate:
-        DefaultEmailOption: "Your verification code is {####}."
+        DefaultEmailOption: CONFIRM_WITH_CODE
         EmailMessage: "Your verification code is {####}."
         EmailSubject: "Verify your email address"
 
