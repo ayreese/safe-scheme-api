@@ -357,8 +357,6 @@ Resources:
         RecoveryMechanisms:
           - Name: verified_email
             Priority: 1
-          - Name: verified_phone_number
-            Priority: 2
       Policies:
         PasswordPolicy:
           MinimumLength: 8
@@ -386,6 +384,12 @@ Resources:
           NumberAttributeConstraints:
             MaxValue: "16"
             MinValue: "2"
+      EmailConfiguration:
+        EmailSendingAccount: COGNITO_DEFAULT
+      VerificationMessageTemplate:
+        DefaultEmailOption: "Your verification code is {####}."
+        EmailMessage: "Your verification code is {####}."
+        EmailSubject: "Verify your email address"
 
   SafeSchemeUserPoolClient:
     Type: AWS::Cognito::UserPoolClient
