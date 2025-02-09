@@ -411,6 +411,7 @@ Resources:
       LogoutURLs:
         - https://staging.d28alr4nb9gk3w.amplifyapp.com/logout
       ExplicitAuthFlows:
+        - ALLOW_USER_AUTH
         - ALLOW_USER_SRP_AUTH
         - ALLOW_USER_PASSWORD_AUTH
         - ALLOW_REFRESH_TOKEN_AUTH
