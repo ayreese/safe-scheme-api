@@ -11,7 +11,7 @@ export const createProjectHandler = async (event) => {
     const project = JSON.parse(event.body);
     const tableName = process.env.PROJECTS_TABLE; // DynamoDB table in SAM template
     const {Project: projectName, Status: status} = project;
-    const userId = event.requestContext.authorizer.claims.sub; // Get userId from event provided by cognito
+    const userId = event.requestContext.identity.user; // Get userId from event provided by cognito
 
     try {
         // Put item into DynamoDB database using PutCommand

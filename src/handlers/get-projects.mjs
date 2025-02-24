@@ -3,7 +3,7 @@ import {QueryCommand} from "@aws-sdk/lib-dynamodb";
 
 export const getProjectsHandler = async (event) => {
     const table = process.env.PROJECTS_TABLE;  // Get table name from environment variables
-    const userId = event.requestContext.authorizer.claims.sub; // Get userId from event provided by cognito
+    const userId = event.requestContext.identity.user; // Get userId from event provided by cognito
 
     try {
         // Query DynamoDB for user data
