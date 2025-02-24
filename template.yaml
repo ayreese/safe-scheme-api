@@ -397,6 +397,7 @@ Resources:
     Properties:
       UserPoolId: !Ref SafeSchemeUserPool
       ClientName: SafeSchemeUserPoolClient
+      AccessTokenValidity: 10
       GenerateSecret: false
       AllowedOAuthFlows:
         - code
