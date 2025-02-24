@@ -41,7 +41,6 @@ Resources:
               Fn::GetAtt: [ SafeSchemeUserPool, Arn ]
             Identity:
               Header: Authorization
-              ValidationExpression: Bearer.*
             AuthorizationScopes:
               - openid
               - profile
