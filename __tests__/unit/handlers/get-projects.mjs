@@ -1,5 +1,5 @@
-// Import getAllItemsHandler function from get-projects.mjs
-import { getProjectsHandler } from '../../../src/handlers/get-projects.mjs';
+// Import getAllItemsHandler function from get-projects.ts
+import { getProjectsHandler } from '../../../src/handlers/get-projects.ts';
 // Import dynamodb from aws-sdk 
 import { DynamoDBDocumentClient, QueryCommand } from '@aws-sdk/lib-dynamodb';
 import { mockClient } from "aws-sdk-client-mock";

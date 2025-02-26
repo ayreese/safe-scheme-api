@@ -115,7 +115,7 @@ Resources:
   createProjectFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/handlers/create-project.createProjectHandler
+      Handler: dist/src/handlers/create-project.createProjectHandler
       Description: Create project for authenticated user
       Policies:
         - DynamoDBCrudPolicy:
@@ -135,7 +135,7 @@ Resources:
   getProjectsFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/handlers/get-projects.getProjectsHandler
+      Handler: dist/src/handlers/get-projects.getProjectsHandler
       Description: Get user projects function
       Policies:
         - DynamoDBCrudPolicy:
@@ -151,7 +151,7 @@ Resources:
   editProjectFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/handlers/edit-project.editProjectHandler
+      Handler: dist/src/handlers/edit-project.editProjectHandler
       Description: Edit project function
       Policies:
         - DynamoDBCrudPolicy:
@@ -175,7 +175,7 @@ Resources:
   deleteProjectsFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/handlers/delete-project.deleteProjectHandler
+      Handler: dist/src/handlers/delete-project.deleteProjectHandler
       Description: Delete project function
       Policies:
         - DynamoDBCrudPolicy:
@@ -196,7 +196,7 @@ Resources:
   createTaskFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/handlers/create-task.createTaskHandler
+      Handler: dist/src/handlers/create-task.createTaskHandler
       Description: Create task for a project for an authenticated user
       Policies:
         - DynamoDBCrudPolicy:
@@ -220,7 +220,7 @@ Resources:
   editTaskFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/handlers/edit-task.editTaskHandler
+      Handler: dist/src/handlers/edit-task.editTaskHandler
       Description: Edit task function
       Policies:
         - DynamoDBCrudPolicy:
@@ -244,7 +244,7 @@ Resources:
   deleteTaskFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/handlers/delete-task.deleteTaskHandler
+      Handler: dist/src/handlers/delete-task.deleteTaskHandler
       Description: Delete task function
       Policies:
         - DynamoDBCrudPolicy:
@@ -265,7 +265,7 @@ Resources:
   createSubtaskFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/handlers/create-subtask.createSubtaskHandler
+      Handler: dist/src/handlers/create-subtask.createSubtaskHandler
       Description: Create subtask for a project for an authenticated user
       Policies:
         - DynamoDBCrudPolicy:
@@ -289,7 +289,7 @@ Resources:
   editSubtaskFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/handlers/edit-subtask.editSubtaskHandler
+      Handler: dist/src/handlers/edit-subtask.editSubtaskHandler
       Description: Edit subtask function
       Policies:
         - DynamoDBCrudPolicy:
@@ -313,7 +313,7 @@ Resources:
   deleteSubtaskFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/handlers/delete-subtask.deleteSubtaskHandler
+      Handler: dist/src/handlers/delete-subtask.deleteSubtaskHandler
       Description: Delete task function
       Policies:
         - DynamoDBCrudPolicy:
