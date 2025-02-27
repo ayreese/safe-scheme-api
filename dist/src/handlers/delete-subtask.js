@@ -5,40 +5,71 @@ const dynamoClient_1 = require("../../utils/dynamoClient");
 const lib_dynamodb_1 = require("@aws-sdk/lib-dynamodb");
 const deleteSubtaskHandler = async (event) => {
     const tableName = process.env.PROJECTS_TABLE;
-    if (event.requestContext.authorizer && event.pathParameters && tableName) {
-        const userId = event.requestContext.authorizer.claims.sub;
-        const projectId = event.pathParameters.ProjectId;
-        const taskId = event.pathParameters.TaskId;
-        const subtaskId = event.pathParameters.SubtaskId;
-        if (!userId || !projectId || !taskId || !subtaskId) {
-            return {
-                statusCode: 400,
-                body: JSON.stringify({ message: "Missing required parameters." })
-            };
-        }
-        try {
-            await dynamoClient_1.client.send(new lib_dynamodb_1.UpdateCommand({
-                TableName: tableName,
-                Key: {
-                    UserId: userId,
-                    ProjectId: projectId,
-                },
-                ConditionExpression: "attribute_exists(Tasks.#TaskId.Subtasks.#SubtaskId)",
-                UpdateExpression: 'REMOVE Tasks.#TaskId.Subtasks.#SubtaskId',
-                ExpressionAttributeNames: {
-                    "#TaskId": taskId,
-                    "#SubtaskId": subtaskId,
-                },
-            }));
-            return {
-                statusCode: 204
-            };
-        }
-        catch (error) {
-            return {
-                statusCode: 404
-            };
-        }
+    if (!tableName) {
+        console.warn("No table name provided");
+        throw new Error("No tableName provided");
+    }
+    if (!event.requestContext.authorizer || !event.pathParameters) {
+        return {
+            statusCode: 400,
+            body: JSON.stringify({ message: "User and parameters must be provided" }),
+            headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Headers": "Content-Type",
+            },
+        };
+    }
+    const userId = event.requestContext.authorizer.claims.sub;
+    const projectId = event.pathParameters.ProjectId;
+    const taskId = event.pathParameters.TaskId;
+    const subtaskId = event.pathParameters.SubtaskId;
+    if (!userId || !projectId || !taskId || !subtaskId) {
+        console.log("Missing parameters:", { userId, projectId, taskId, subtaskId });
+        return {
+            statusCode: 400,
+            body: JSON.stringify({ message: "Missing required parameters." }),
+            headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Headers": "Content-Type",
+            },
+        };
+    }
+    try {
+        await dynamoClient_1.client.send(new lib_dynamodb_1.UpdateCommand({
+            TableName: tableName,
+            Key: {
+                UserId: userId,
+                ProjectId: projectId,
+            },
+            ConditionExpression: "attribute_exists(Tasks.#TaskId.Subtasks.#SubtaskId)",
+            UpdateExpression: 'REMOVE Tasks.#TaskId.Subtasks.#SubtaskId',
+            ExpressionAttributeNames: {
+                "#TaskId": taskId,
+                "#SubtaskId": subtaskId,
+            },
+        }));
+        return {
+            statusCode: 204, // Successfully deleted, no content
+            headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Headers": "Content-Type",
+            },
+        };
+    }
+    catch (error) {
+        console.error("Error deleting subtask:", { userId, projectId, taskId, subtaskId, error: error.message });
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ message: "Failed to delete subtask", error: error.message }),
+            headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Headers": "Content-Type",
+            },
+        };
     }
 };
 exports.deleteSubtaskHandler = deleteSubtaskHandler;

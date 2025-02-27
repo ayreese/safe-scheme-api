@@ -12,10 +12,32 @@ const createSubtaskHandler = async (event) => {
         const tableName = process.env.PROJECTS_TABLE; // DynamoDB table in SAM template
         const subtask = JSON.parse(event.body);
         const { Subtask: description, Status: status } = subtask;
-        const userId = event.requestContext.authorizer.claims.sub; // Get userId from event provided by cognito
+        const userId = event.requestContext.authorizer.claims.sub; // Get userId from event
         const projectId = event.pathParameters.ProjectId;
-        const taskId = event.pathParameters.TaskId || "";
+        const taskId = event.pathParameters.TaskId;
         const subtaskId = crypto_1.default.randomUUID();
+        if (!description || !status) {
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ message: "Subtask description and status are required" }),
+                headers: {
+                    "Content-Type": "application/json",
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Headers": "Content-Type",
+                },
+            };
+        }
+        if (!projectId || !taskId) {
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ message: "ProjectId and TaskId are required" }),
+                headers: {
+                    "Content-Type": "application/json",
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Headers": "Content-Type",
+                },
+            };
+        }
         try {
             await dynamoClient_1.client.send(new lib_dynamodb_1.UpdateCommand({
                 TableName: tableName,
@@ -38,18 +60,46 @@ const createSubtaskHandler = async (event) => {
             }));
             return {
                 statusCode: 201,
-                body: JSON.stringify({ message: "Created subtask" })
+                body: JSON.stringify({ message: "Created subtask" }),
+                headers: {
+                    "Content-Type": "application/json",
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Headers": "Content-Type",
+                },
             };
         }
         catch (e) {
+            console.error("Error updating subtask:", {
+                userId,
+                projectId,
+                taskId,
+                subtaskId,
+                error: e.message
+            });
             return {
                 statusCode: 500,
-                body: JSON.stringify({ message: "Failed to create subtask", error: e.message })
+                body: JSON.stringify({
+                    message: "Failed to create subtask",
+                    error: e.message,
+                }),
+                headers: {
+                    "Content-Type": "application/json",
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Headers": "Content-Type",
+                },
             };
         }
     }
     else {
-        throw new Error("Must provide body, user, and path parameters");
+        return {
+            statusCode: 400,
+            body: JSON.stringify({ message: "Must provide body, user, and path parameters" }),
+            headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Headers": "Content-Type",
+            },
+        };
     }
 };
 exports.createSubtaskHandler = createSubtaskHandler;
