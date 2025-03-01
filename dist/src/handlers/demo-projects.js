@@ -1,39 +1,48 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.demoProjectsHandler = void 0;
-const create_project_1 = require("./create-project");
-const create_task_1 = require("./create-task");
 const mockEvent_1 = require("../../utils/mockEvent");
 const headers_1 = require("../../utils/headers");
+const crypto_1 = __importDefault(require("crypto"));
+const dynamoClient_1 = require("../../utils/dynamoClient");
+const lib_dynamodb_1 = require("@aws-sdk/lib-dynamodb");
 const demoProjectsHandler = async (event) => {
     const tableName = process.env.PROJECTS_TABLE;
     const userId = event.request.userAttributes.userId;
+    const tasks = (0, mockEvent_1.createDemoTasks)(mockEvent_1.safeSchemeTasks);
     if (!tableName || !userId) {
         console.warn("Demo projects couldn't be created");
         throw new Error("Problem creating demo projects");
     }
     try {
-        const projectMockEvent = (0, mockEvent_1.ProjectMockEvent)(mockEvent_1.learnSafeScheme, userId);
-        const projectResponse = await (0, create_project_1.createProjectHandler)(projectMockEvent);
-        const projectId = JSON.parse(projectResponse.body).ProjectId;
-        for (const taskDescription of mockEvent_1.safeSchemeTasks) {
-            const taskMockEvent = (0, mockEvent_1.TaskMockEvent)(taskDescription, userId, { ProjectId: projectId });
-            await (0, create_task_1.createTaskHandler)(taskMockEvent);
-        }
+        const data = await dynamoClient_1.client.send(new lib_dynamodb_1.PutCommand({
+            TableName: tableName,
+            Item: {
+                UserId: userId,
+                ProjectId: crypto_1.default.randomUUID(),
+                Project: "Learn Safe Scheme",
+                Status: false,
+                Tasks: tasks
+            }
+        }));
         return {
-            statusCode: 201,
-            body: projectResponse.body,
+            statusCode: data.$metadata.httpStatusCode,
+            body: JSON.stringify({ message: "Created project" }),
             headers: headers_1.responseHeaders
         };
     }
     catch (error) {
-        console.error("Error in creating project for new user:", error);
+        console.error("Error creating project:", error);
         return {
             statusCode: 500,
             body: JSON.stringify({
-                message: "Failed to create project for new user",
-                error: error.stack || error.message,
+                message: "Failed to create project",
+                error: error.message,
             }),
+            headers: headers_1.responseHeaders
         };
     }
 };
