@@ -3,17 +3,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.editProjectHandler = void 0;
 const dynamoClient_1 = require("../../utils/dynamoClient");
 const lib_dynamodb_1 = require("@aws-sdk/lib-dynamodb");
+const headers_1 = require("../../utils/headers");
 const editProjectHandler = async (event) => {
     const tableName = process.env.PROJECTS_TABLE;
     if (!tableName) {
         return {
             statusCode: 500,
             body: JSON.stringify({ message: "No table name provided" }),
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: headers_1.responseHeaders
         };
     }
     if (!event.body || !event.requestContext.authorizer || !event.pathParameters || !event.pathParameters.ProjectId) {
@@ -21,11 +18,7 @@ const editProjectHandler = async (event) => {
         return {
             statusCode: 400,
             body: JSON.stringify({ message: "Missing required parameters (body, user, projectId)" }),
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: headers_1.responseHeaders
         };
     }
     const projectParameters = JSON.parse(event.body);
@@ -49,11 +42,7 @@ const editProjectHandler = async (event) => {
         return {
             statusCode: 200,
             body: JSON.stringify({ message: "Project updated successfully" }),
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: headers_1.responseHeaders
         };
     }
     catch (error) {
@@ -61,11 +50,7 @@ const editProjectHandler = async (event) => {
         return {
             statusCode: 500,
             body: JSON.stringify({ message: "Failed to update project", error: error.message }),
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: headers_1.responseHeaders
         };
     }
 };

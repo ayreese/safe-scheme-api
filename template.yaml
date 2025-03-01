@@ -330,6 +330,22 @@ Resources:
                   Required: true
                   Caching: false
 
+  demoProjectsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: dist/src/handlers/demo-projects.demoProjectsHandler
+      Description: Demo projects for new user
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ProjectsTable
+      Events:
+        CognitoUserSignUp:
+          Type: Cognito
+          Properties:
+            UserPool:
+              Ref: SafeSchemeUserPool
+            Trigger: PostConfirmation
+
   #DynamoDB Tables
   ProjectsTable:
     Type: AWS::DynamoDB::Table

@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.editTaskHandler = void 0;
 const dynamoClient_1 = require("../../utils/dynamoClient");
 const lib_dynamodb_1 = require("@aws-sdk/lib-dynamodb");
+const headers_1 = require("../../utils/headers");
 const editTaskHandler = async (event) => {
     const tableName = process.env.PROJECTS_TABLE;
     if (!tableName) {
@@ -10,22 +11,14 @@ const editTaskHandler = async (event) => {
         return {
             statusCode: 500,
             body: JSON.stringify({ message: "No table name provided" }),
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: headers_1.responseHeaders
         };
     }
     if (!event.body || !event.pathParameters || !event.requestContext.authorizer) {
         return {
             statusCode: 400,
             body: JSON.stringify({ message: "Missing required parameters (body, user, taskId)" }),
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: headers_1.responseHeaders
         };
     }
     const taskParameters = JSON.parse(event.body);
@@ -38,11 +31,7 @@ const editTaskHandler = async (event) => {
         return {
             statusCode: 400,
             body: JSON.stringify({ message: "TaskId must be provided" }),
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: headers_1.responseHeaders
         };
     }
     try {
@@ -65,11 +54,7 @@ const editTaskHandler = async (event) => {
         return {
             statusCode: 200,
             body: JSON.stringify({ message: "Task updated successfully" }),
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: headers_1.responseHeaders
         };
     }
     catch (error) {
@@ -77,11 +62,7 @@ const editTaskHandler = async (event) => {
         return {
             statusCode: 500,
             body: JSON.stringify({ message: `Failed to update task ${taskId}`, error: error.message }),
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: headers_1.responseHeaders
         };
     }
 };

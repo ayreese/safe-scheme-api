@@ -2,6 +2,7 @@ import { APIGatewayEvent } from "aws-lambda";
 import { client } from "../../utils/dynamoClient";
 import crypto from 'crypto';
 import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import {responseHeaders} from "../../utils/headers";
 
 export const createSubtaskHandler = async (event: APIGatewayEvent) => {
     if (event.body && event.requestContext.authorizer && event.pathParameters) {
@@ -61,11 +62,7 @@ export const createSubtaskHandler = async (event: APIGatewayEvent) => {
             return {
                 statusCode: 201,
                 body: JSON.stringify({ message: "Created subtask" }),
-                headers: {
-                    "Content-Type": "application/json",
-                    "Access-Control-Allow-Origin": "*",
-                    "Access-Control-Allow-Headers": "Content-Type",
-                },
+                headers: responseHeaders
             };
         } catch (e: any) {
             console.error("Error updating subtask:", {
@@ -81,22 +78,14 @@ export const createSubtaskHandler = async (event: APIGatewayEvent) => {
                     message: "Failed to create subtask",
                     error: e.message,
                 }),
-                headers: {
-                    "Content-Type": "application/json",
-                    "Access-Control-Allow-Origin": "*",
-                    "Access-Control-Allow-Headers": "Content-Type",
-                },
+                headers: responseHeaders
             };
         }
     } else {
         return {
             statusCode: 400,
             body: JSON.stringify({ message: "Must provide body, user, and path parameters" }),
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: responseHeaders
         };
     }
 };

@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteProjectHandler = void 0;
 const dynamoClient_1 = require("../../utils/dynamoClient");
 const lib_dynamodb_1 = require("@aws-sdk/lib-dynamodb");
+const headers_1 = require("../../utils/headers");
 const deleteProjectHandler = async (event) => {
     const tableName = process.env.PROJECTS_TABLE;
     if (!tableName) {
@@ -15,11 +16,7 @@ const deleteProjectHandler = async (event) => {
             body: JSON.stringify({
                 message: "UserId and ProjectId must be provided.",
             }),
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: headers_1.responseHeaders
         };
     }
     const userId = event.pathParameters.UserId;
@@ -34,11 +31,7 @@ const deleteProjectHandler = async (event) => {
         }));
         return {
             statusCode: 204,
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: headers_1.responseHeaders
         };
     }
     catch (error) {
@@ -49,11 +42,7 @@ const deleteProjectHandler = async (event) => {
                 message: "Failed to delete project",
                 error: error.message,
             }),
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: headers_1.responseHeaders
         };
     }
 };

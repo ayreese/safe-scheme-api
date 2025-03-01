@@ -1,6 +1,7 @@
 import { client } from "../../utils/dynamoClient";
 import { DeleteCommand } from "@aws-sdk/lib-dynamodb";
 import { APIGatewayEvent } from "aws-lambda";
+import {responseHeaders} from "../../utils/headers";
 
 export const deleteProjectHandler = async (event: APIGatewayEvent) => {
     const tableName = process.env.PROJECTS_TABLE;
@@ -15,11 +16,7 @@ export const deleteProjectHandler = async (event: APIGatewayEvent) => {
             body: JSON.stringify({
                 message: "UserId and ProjectId must be provided.",
             }),
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: responseHeaders
         };
     }
 
@@ -37,11 +34,7 @@ export const deleteProjectHandler = async (event: APIGatewayEvent) => {
 
         return {
             statusCode: 204,
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: responseHeaders
         };
     } catch (error: any) {
         console.error("Error deleting project:", { userId, projectId, error: error.message });
@@ -51,11 +44,7 @@ export const deleteProjectHandler = async (event: APIGatewayEvent) => {
                 message: "Failed to delete project",
                 error: error.message,
             }),
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: responseHeaders
         };
     }
 };

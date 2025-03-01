@@ -7,6 +7,7 @@ exports.createSubtaskHandler = void 0;
 const dynamoClient_1 = require("../../utils/dynamoClient");
 const crypto_1 = __importDefault(require("crypto"));
 const lib_dynamodb_1 = require("@aws-sdk/lib-dynamodb");
+const headers_1 = require("../../utils/headers");
 const createSubtaskHandler = async (event) => {
     if (event.body && event.requestContext.authorizer && event.pathParameters) {
         const tableName = process.env.PROJECTS_TABLE; // DynamoDB table in SAM template
@@ -61,11 +62,7 @@ const createSubtaskHandler = async (event) => {
             return {
                 statusCode: 201,
                 body: JSON.stringify({ message: "Created subtask" }),
-                headers: {
-                    "Content-Type": "application/json",
-                    "Access-Control-Allow-Origin": "*",
-                    "Access-Control-Allow-Headers": "Content-Type",
-                },
+                headers: headers_1.responseHeaders
             };
         }
         catch (e) {
@@ -82,11 +79,7 @@ const createSubtaskHandler = async (event) => {
                     message: "Failed to create subtask",
                     error: e.message,
                 }),
-                headers: {
-                    "Content-Type": "application/json",
-                    "Access-Control-Allow-Origin": "*",
-                    "Access-Control-Allow-Headers": "Content-Type",
-                },
+                headers: headers_1.responseHeaders
             };
         }
     }
@@ -94,11 +87,7 @@ const createSubtaskHandler = async (event) => {
         return {
             statusCode: 400,
             body: JSON.stringify({ message: "Must provide body, user, and path parameters" }),
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: headers_1.responseHeaders
         };
     }
 };

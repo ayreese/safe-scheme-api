@@ -1,6 +1,7 @@
 import { client } from "../../utils/dynamoClient";
 import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { APIGatewayEvent } from "aws-lambda";
+import {responseHeaders} from "../../utils/headers";
 
 export const deleteTaskHandler = async (event: APIGatewayEvent) => {
     const tableName = process.env.PROJECTS_TABLE;
@@ -9,11 +10,7 @@ export const deleteTaskHandler = async (event: APIGatewayEvent) => {
         return {
             statusCode: 500,
             body: JSON.stringify({ message: "No table name provided" }),
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: responseHeaders
         };
     }
 
@@ -22,11 +19,7 @@ export const deleteTaskHandler = async (event: APIGatewayEvent) => {
         return {
             statusCode: 400,
             body: JSON.stringify({ message: "UserId, ProjectId, and TaskId must be provided." }),
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: responseHeaders
         };
     }
 
@@ -38,11 +31,7 @@ export const deleteTaskHandler = async (event: APIGatewayEvent) => {
         return {
             statusCode: 400,
             body: JSON.stringify({ message: "task not found" }),
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: responseHeaders
         };
     }
 
@@ -62,22 +51,14 @@ export const deleteTaskHandler = async (event: APIGatewayEvent) => {
 
         return {
             statusCode: 204,
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: responseHeaders
         };
     } catch (error: any) {
         console.error("Error deleting task:", error);
         return {
             statusCode: 500,
             body: JSON.stringify({ message: "Failed to delete task", error: error.message }),
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: responseHeaders
         };
     }
 };

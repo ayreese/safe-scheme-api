@@ -2,17 +2,14 @@ import { APIGatewayEvent } from "aws-lambda";
 import crypto from 'crypto';
 import { PutCommand } from "@aws-sdk/lib-dynamodb";
 import { client } from "../../utils/dynamoClient";
+import {responseHeaders} from "../../utils/headers";
 
 export const createProjectHandler = async (event: APIGatewayEvent) => {
     if (!event.body || !event.requestContext.authorizer) {
         return {
             statusCode: 400,
             body: JSON.stringify({ message: "Request body and authorization are required" }),
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: responseHeaders
         };
     }
 
@@ -30,20 +27,17 @@ export const createProjectHandler = async (event: APIGatewayEvent) => {
         return {
             statusCode: 400,
             body: JSON.stringify({ message: "Project name and status are required" }),
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: responseHeaders
         };
     }
 
     try {
-        await client.send(new PutCommand({
+        const projectId = crypto.randomUUID();
+        const data = await client.send(new PutCommand({
             TableName: tableName,
             Item: {
                 UserId: userId,
-                ProjectId: crypto.randomUUID(),
+                ProjectId: projectId,
                 Project: projectName,
                 Status: status,
                 Tasks: {},
@@ -51,13 +45,9 @@ export const createProjectHandler = async (event: APIGatewayEvent) => {
         }));
 
         return {
-            statusCode: 201,
-            body: JSON.stringify({ message: "Created project" }),
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            statusCode: data.$metadata.httpStatusCode,
+            body: JSON.stringify({ message: "Created project", ProjectId: projectId }),
+            headers: responseHeaders
         };
     } catch (error: any) {
         console.error("Error creating project:", error);
@@ -67,11 +57,7 @@ export const createProjectHandler = async (event: APIGatewayEvent) => {
                 message: "Failed to create project",
                 error: error.message,
             }),
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: responseHeaders
         };
     }
 };

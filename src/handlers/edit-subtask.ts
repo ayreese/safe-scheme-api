@@ -1,6 +1,7 @@
 import { client } from "../../utils/dynamoClient";
 import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { APIGatewayEvent } from "aws-lambda";
+import {responseHeaders} from "../../utils/headers";
 
 export const editSubtaskHandler = async (event: APIGatewayEvent) => {
     const tableName = process.env.PROJECTS_TABLE;
@@ -10,11 +11,7 @@ export const editSubtaskHandler = async (event: APIGatewayEvent) => {
         return {
             statusCode: 500,
             body: JSON.stringify({ message: "No table name provided" }),
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: responseHeaders
         };
     }
 
@@ -23,11 +20,7 @@ export const editSubtaskHandler = async (event: APIGatewayEvent) => {
         return {
             statusCode: 400,
             body: JSON.stringify({ message: "Missing required parameters (body, user, taskId, subtaskId)" }),
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: responseHeaders
         };
     }
 
@@ -42,11 +35,7 @@ export const editSubtaskHandler = async (event: APIGatewayEvent) => {
         return {
             statusCode: 400,
             body: JSON.stringify({ message: "TaskId and SubtaskId must be provided" }),
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: responseHeaders
         };
     }
 
@@ -71,22 +60,14 @@ export const editSubtaskHandler = async (event: APIGatewayEvent) => {
         return {
             statusCode: 200,
             body: JSON.stringify({ message: "Subtask updated successfully" }),
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: responseHeaders
         };
     } catch (error: any) {
         console.error("Error updating subtask:", error);
         return {
             statusCode: 500,
             body: JSON.stringify({ message: `Failed to update subtask ${subtaskId}`, error: error.message }),
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: responseHeaders
         };
     }
 };

@@ -7,6 +7,7 @@ exports.createTaskHandler = void 0;
 const dynamoClient_1 = require("../../utils/dynamoClient");
 const lib_dynamodb_1 = require("@aws-sdk/lib-dynamodb");
 const crypto_1 = __importDefault(require("crypto"));
+const headers_1 = require("../../utils/headers");
 const createTaskHandler = async (event) => {
     const tableName = process.env.PROJECTS_TABLE;
     if (!tableName) {
@@ -29,25 +30,19 @@ const createTaskHandler = async (event) => {
             },
         };
     }
-    const taskProperties = JSON.parse(event.body);
+    const { TaskDescription } = JSON.parse(event.body);
     const projectId = event.pathParameters.ProjectId;
-    const { TaskDescription } = taskProperties;
     const userId = event.requestContext.authorizer.claims.sub; // Get userId from event provided by cognito
-    const taskId = crypto_1.default.randomUUID();
-    // Validate TaskDescription
     if (!TaskDescription) {
         return {
             statusCode: 400,
             body: JSON.stringify({ message: "TaskDescription is required" }),
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: headers_1.responseHeaders
         };
     }
     try {
-        await dynamoClient_1.client.send(new lib_dynamodb_1.UpdateCommand({
+        const taskId = crypto_1.default.randomUUID();
+        const response = await dynamoClient_1.client.send(new lib_dynamodb_1.UpdateCommand({
             TableName: tableName,
             Key: {
                 UserId: userId,
@@ -66,8 +61,8 @@ const createTaskHandler = async (event) => {
             },
         }));
         return {
-            statusCode: 201,
-            body: JSON.stringify({ message: "Created task" }),
+            statusCode: response.$metadata.httpStatusCode,
+            body: JSON.stringify({ message: "Created task", TaskId: taskId }),
             headers: {
                 "Content-Type": "application/json",
                 "Access-Control-Allow-Origin": "*",
@@ -77,9 +72,8 @@ const createTaskHandler = async (event) => {
     }
     catch (error) {
         console.error("Error creating task:", {
-            userId,
-            projectId,
-            taskId,
+            user: userId,
+            projectId: projectId,
             error: error.message,
         });
         return {

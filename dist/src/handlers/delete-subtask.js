@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteSubtaskHandler = void 0;
 const dynamoClient_1 = require("../../utils/dynamoClient");
 const lib_dynamodb_1 = require("@aws-sdk/lib-dynamodb");
+const headers_1 = require("../../utils/headers");
 const deleteSubtaskHandler = async (event) => {
     const tableName = process.env.PROJECTS_TABLE;
     if (!tableName) {
@@ -13,11 +14,7 @@ const deleteSubtaskHandler = async (event) => {
         return {
             statusCode: 400,
             body: JSON.stringify({ message: "User and parameters must be provided" }),
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: headers_1.responseHeaders
         };
     }
     const userId = event.requestContext.authorizer.claims.sub;
@@ -29,11 +26,7 @@ const deleteSubtaskHandler = async (event) => {
         return {
             statusCode: 400,
             body: JSON.stringify({ message: "Missing required parameters." }),
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: headers_1.responseHeaders
         };
     }
     try {
@@ -64,11 +57,7 @@ const deleteSubtaskHandler = async (event) => {
         return {
             statusCode: 500,
             body: JSON.stringify({ message: "Failed to delete subtask", error: error.message }),
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: headers_1.responseHeaders
         };
     }
 };

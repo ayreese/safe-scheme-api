@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteTaskHandler = void 0;
 const dynamoClient_1 = require("../../utils/dynamoClient");
 const lib_dynamodb_1 = require("@aws-sdk/lib-dynamodb");
+const headers_1 = require("../../utils/headers");
 const deleteTaskHandler = async (event) => {
     const tableName = process.env.PROJECTS_TABLE;
     if (!tableName) {
@@ -10,11 +11,7 @@ const deleteTaskHandler = async (event) => {
         return {
             statusCode: 500,
             body: JSON.stringify({ message: "No table name provided" }),
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: headers_1.responseHeaders
         };
     }
     if (!event.pathParameters || !event.pathParameters.UserId || !event.pathParameters.ProjectId || !event.pathParameters.TaskId) {
@@ -22,11 +19,7 @@ const deleteTaskHandler = async (event) => {
         return {
             statusCode: 400,
             body: JSON.stringify({ message: "UserId, ProjectId, and TaskId must be provided." }),
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: headers_1.responseHeaders
         };
     }
     const userId = event.pathParameters.UserId;
@@ -36,11 +29,7 @@ const deleteTaskHandler = async (event) => {
         return {
             statusCode: 400,
             body: JSON.stringify({ message: "task not found" }),
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: headers_1.responseHeaders
         };
     }
     try {
@@ -58,11 +47,7 @@ const deleteTaskHandler = async (event) => {
         }));
         return {
             statusCode: 204,
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: headers_1.responseHeaders
         };
     }
     catch (error) {
@@ -70,11 +55,7 @@ const deleteTaskHandler = async (event) => {
         return {
             statusCode: 500,
             body: JSON.stringify({ message: "Failed to delete task", error: error.message }),
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: headers_1.responseHeaders
         };
     }
 };

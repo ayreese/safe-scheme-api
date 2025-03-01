@@ -1,6 +1,7 @@
 import { client } from "../../utils/dynamoClient";
 import { QueryCommand } from "@aws-sdk/lib-dynamodb";
 import { APIGatewayEvent } from "aws-lambda";
+import {responseHeaders} from "../../utils/headers";
 
 export const getProjectsHandler = async (event: APIGatewayEvent) => {
     const table = process.env.PROJECTS_TABLE;
@@ -15,11 +16,7 @@ export const getProjectsHandler = async (event: APIGatewayEvent) => {
         return {
             statusCode: 401,
             body: JSON.stringify({ message: "Unauthorized request" }),
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: responseHeaders
         };
     }
 
@@ -39,11 +36,7 @@ export const getProjectsHandler = async (event: APIGatewayEvent) => {
             return {
                 statusCode: 200,
                 body: JSON.stringify({ projects: Items }),
-                headers: {
-                    "Content-Type": "application/json",
-                    "Access-Control-Allow-Origin": "*",
-                    "Access-Control-Allow-Headers": "Content-Type",
-                },
+                headers: responseHeaders
             };
         } else {
             // No projects found
@@ -51,11 +44,7 @@ export const getProjectsHandler = async (event: APIGatewayEvent) => {
             return {
                 statusCode: 404,
                 body: JSON.stringify({ message: "No projects found" }),
-                headers: {
-                    "Content-Type": "application/json",
-                    "Access-Control-Allow-Origin": "*",
-                    "Access-Control-Allow-Headers": "Content-Type",
-                },
+                headers: responseHeaders
             };
         }
     } catch (error: any) {
@@ -63,11 +52,7 @@ export const getProjectsHandler = async (event: APIGatewayEvent) => {
         return {
             statusCode: 500,
             body: JSON.stringify({ message: "Failed to retrieve projects", error: error.message }),
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: responseHeaders
         };
     }
 };

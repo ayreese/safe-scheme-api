@@ -1,6 +1,7 @@
 import { client } from "../../utils/dynamoClient";
 import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { APIGatewayEvent } from "aws-lambda";
+import {responseHeaders} from "../../utils/headers";
 
 export const deleteSubtaskHandler = async (event: APIGatewayEvent) => {
     const tableName = process.env.PROJECTS_TABLE;
@@ -13,11 +14,7 @@ export const deleteSubtaskHandler = async (event: APIGatewayEvent) => {
         return {
             statusCode: 400,
             body: JSON.stringify({ message: "User and parameters must be provided" }),
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: responseHeaders
         };
     }
 
@@ -31,11 +28,7 @@ export const deleteSubtaskHandler = async (event: APIGatewayEvent) => {
         return {
             statusCode: 400,
             body: JSON.stringify({ message: "Missing required parameters." }),
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: responseHeaders
         };
     }
 
@@ -67,11 +60,7 @@ export const deleteSubtaskHandler = async (event: APIGatewayEvent) => {
         return {
             statusCode: 500,
             body: JSON.stringify({ message: "Failed to delete subtask", error: error.message }),
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
+            headers: responseHeaders
         };
     }
 };
