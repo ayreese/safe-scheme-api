@@ -33,7 +33,7 @@ export const createProjectHandler = async (event: APIGatewayEvent) => {
 
     try {
         const projectId = crypto.randomUUID();
-        const data = await client.send(new PutCommand({
+        await client.send(new PutCommand({
             TableName: tableName,
             Item: {
                 UserId: userId,
@@ -45,7 +45,7 @@ export const createProjectHandler = async (event: APIGatewayEvent) => {
         }));
 
         return {
-            statusCode: data.$metadata.httpStatusCode,
+            statusCode: 200,
             body: JSON.stringify({ message: "Created project", ProjectId: projectId }),
             headers: responseHeaders
         };

@@ -3,7 +3,7 @@ import {safeSchemeTasks, createDemoTasks} from "../../utils/mockEvent";
 import {responseHeaders} from "../../utils/headers";
 import crypto from "crypto";
 import {client} from "../../utils/dynamoClient";
-import {PutCommand, PutCommandOutput} from "@aws-sdk/lib-dynamodb";
+import {PutCommand} from "@aws-sdk/lib-dynamodb";
 
 
 export const demoProjectsHandler = async (event: PostConfirmationTriggerEvent) => {
@@ -17,7 +17,7 @@ export const demoProjectsHandler = async (event: PostConfirmationTriggerEvent) =
     }
 
     try {
-        const data: PutCommandOutput = await client.send(new PutCommand({
+        await client.send(new PutCommand({
             TableName: tableName,
             Item: {
                 UserId: userId,
@@ -29,7 +29,7 @@ export const demoProjectsHandler = async (event: PostConfirmationTriggerEvent) =
         }));
 
         return {
-            statusCode: data.$metadata.httpStatusCode,
+            statusCode: 200,
             body: JSON.stringify({message: "Created project"}),
             headers: responseHeaders
         };

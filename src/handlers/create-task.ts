@@ -41,7 +41,7 @@ export const createTaskHandler = async (event: APIGatewayEvent) => {
 
     try {
         const taskId = crypto.randomUUID();
-        const response = await client.send(new UpdateCommand({
+       await client.send(new UpdateCommand({
             TableName: tableName,
             Key: {
                 UserId: userId,
@@ -61,7 +61,7 @@ export const createTaskHandler = async (event: APIGatewayEvent) => {
         }));
 
         return {
-            statusCode: response.$metadata.httpStatusCode,
+            statusCode: 200,
             body: JSON.stringify({message: "Created task", TaskId: taskId}),
             headers: {
                 "Content-Type": "application/json",
