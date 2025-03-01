@@ -18,7 +18,7 @@ const demoProjectsHandler = async (event) => {
         throw new Error("Problem creating demo projects");
     }
     try {
-        const data = await dynamoClient_1.client.send(new lib_dynamodb_1.PutCommand({
+        await dynamoClient_1.client.send(new lib_dynamodb_1.PutCommand({
             TableName: tableName,
             Item: {
                 UserId: userId,
@@ -29,7 +29,7 @@ const demoProjectsHandler = async (event) => {
             }
         }));
         return {
-            statusCode: data.$metadata.httpStatusCode,
+            statusCode: 200,
             body: JSON.stringify({ message: "Created project" }),
             headers: headers_1.responseHeaders
         };

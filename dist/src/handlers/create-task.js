@@ -42,7 +42,7 @@ const createTaskHandler = async (event) => {
     }
     try {
         const taskId = crypto_1.default.randomUUID();
-        const response = await dynamoClient_1.client.send(new lib_dynamodb_1.UpdateCommand({
+        await dynamoClient_1.client.send(new lib_dynamodb_1.UpdateCommand({
             TableName: tableName,
             Key: {
                 UserId: userId,
@@ -61,7 +61,7 @@ const createTaskHandler = async (event) => {
             },
         }));
         return {
-            statusCode: response.$metadata.httpStatusCode,
+            statusCode: 200,
             body: JSON.stringify({ message: "Created task", TaskId: taskId }),
             headers: {
                 "Content-Type": "application/json",

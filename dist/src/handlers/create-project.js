@@ -32,7 +32,7 @@ const createProjectHandler = async (event) => {
     }
     try {
         const projectId = crypto_1.default.randomUUID();
-        const data = await dynamoClient_1.client.send(new lib_dynamodb_1.PutCommand({
+        await dynamoClient_1.client.send(new lib_dynamodb_1.PutCommand({
             TableName: tableName,
             Item: {
                 UserId: userId,
@@ -43,7 +43,7 @@ const createProjectHandler = async (event) => {
             }
         }));
         return {
-            statusCode: data.$metadata.httpStatusCode,
+            statusCode: 200,
             body: JSON.stringify({ message: "Created project", ProjectId: projectId }),
             headers: headers_1.responseHeaders
         };
