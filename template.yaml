@@ -330,6 +330,7 @@ Resources:
                   Required: true
                   Caching: false
 
+
   demoProjectsFunction:
     Type: AWS::Serverless::Function
     Properties:
