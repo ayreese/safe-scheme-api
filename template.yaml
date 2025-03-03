@@ -351,6 +351,7 @@ Resources:
             UserPool: !Ref SafeSchemeUserPool
             Trigger: PostConfirmation
 
+
   #DynamoDB Tables
   ProjectsTable:
     Type: AWS::DynamoDB::Table
