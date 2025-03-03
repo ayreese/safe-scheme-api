@@ -345,7 +345,7 @@ Resources:
         Variables:
           PROJECTS_TABLE: !Ref ProjectsTable
       Events:
-        CognitoPostConfirmation:
+        PostConfirmation:
           Type: CognitoUserPool
           Properties:
             UserPool: !Ref SafeSchemeUserPool
