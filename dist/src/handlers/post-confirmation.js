@@ -7,7 +7,8 @@ exports.demoProjectHandler = void 0;
 const crypto_1 = __importDefault(require("crypto"));
 const lib_dynamodb_1 = require("@aws-sdk/lib-dynamodb");
 const dynamoClient_1 = require("../../utils/dynamoClient"); // Your DynamoDB client
-const tasks_1 = require("../../utils/tasks"); // A helper function that creates tasks
+const tasks_1 = require("../../utils/tasks");
+const headers_1 = require("../../utils/headers"); // A helper function that creates tasks
 /**
  * This function is triggered by Cognito after user confirmation.
  * It will create a demo project for the new user.
@@ -17,7 +18,14 @@ const demoProjectHandler = async (event) => {
     if (!tableName) {
         throw new Error('PROJECTS_TABLE environment variable is not set.');
     }
-    const userId = event.request.userAttributes.sub; // Use 'sub' as the user identifier
+    if (!event.requestContext.authorizer) {
+        return {
+            statusCode: 400,
+            body: JSON.stringify({ message: "Request authorization are required" }),
+            headers: headers_1.responseHeaders
+        };
+    }
+    const userId = event.requestContext.authorizer.claims.sub;
     try {
         const projectId = crypto_1.default.randomUUID(); // Generate a unique project ID
         await dynamoClient_1.client.send(new lib_dynamodb_1.PutCommand({

@@ -1,21 +1,30 @@
-import { APIGatewayProxyResult, PostConfirmationTriggerEvent } from 'aws-lambda';
+import {APIGatewayEvent, APIGatewayProxyResult} from 'aws-lambda';
 import crypto from 'crypto';
 import { PutCommand } from '@aws-sdk/lib-dynamodb';
 import { client } from '../../utils/dynamoClient'; // Your DynamoDB client
-import { createTasks } from '../../utils/tasks'; // A helper function that creates tasks
+import { createTasks } from '../../utils/tasks';
+import {responseHeaders} from "../../utils/headers"; // A helper function that creates tasks
 
 /**
  * This function is triggered by Cognito after user confirmation.
  * It will create a demo project for the new user.
  */
-export const demoProjectHandler = async (event: PostConfirmationTriggerEvent): Promise<APIGatewayProxyResult> => {
+export const demoProjectHandler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     const tableName = process.env.PROJECTS_TABLE;
 
     if (!tableName) {
         throw new Error('PROJECTS_TABLE environment variable is not set.');
     }
 
-    const userId = event.request.userAttributes.sub; // Use 'sub' as the user identifier
+    if (!event.requestContext.authorizer) {
+        return {
+            statusCode: 400,
+            body: JSON.stringify({ message: "Request authorization are required" }),
+            headers: responseHeaders
+        };
+    }
+
+    const userId = event.requestContext.authorizer.claims.sub;
 
     try {
         const projectId = crypto.randomUUID(); // Generate a unique project ID

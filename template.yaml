@@ -335,21 +335,17 @@ Resources:
     Properties:
       Handler: dist/src/handlers/post-confirmation.demoProjectHandler
       Description: Creates a demo project when a new user is confirmed in Cognito
-      Runtime: nodejs20.x
-      MemorySize: 128
-      Timeout: 30
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ProjectsTable
-      Environment:
-        Variables:
-          PROJECTS_TABLE: !Ref ProjectsTable
       Events:
-        PostConfirmation:
-          Type: CognitoUserPool
+        Api:
+          Type: Api
           Properties:
-            UserPool: !Ref SafeSchemeUserPool
-            Trigger: PostConfirmation
+            RestApiId: !Ref SafeSchemeAPI
+            Path: /demo-project
+            Method: Post
+
 
 
   #DynamoDB Tables
@@ -414,6 +410,7 @@ Resources:
         EmailMessage: "Your verification code is {####}."
         EmailSubject: "Verify your email address"
 
+
   SafeSchemeUserPoolClient:
     Type: AWS::Cognito::UserPoolClient
     Properties:
@@ -433,7 +430,6 @@ Resources:
       LogoutURLs:
         - https://staging.d28alr4nb9gk3w.amplifyapp.com/logout
       ExplicitAuthFlows:
-        - ALLOW_USER_AUTH
         - ALLOW_USER_SRP_AUTH
         - ALLOW_USER_PASSWORD_AUTH
         - ALLOW_REFRESH_TOKEN_AUTH

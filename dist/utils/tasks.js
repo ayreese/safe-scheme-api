@@ -16,6 +16,11 @@ const tasksList = [
         description: 'Create a task using the "add task" button in the project header',
         attachments: [],
     },
+    {
+        name: 'Edit Task',
+        description: 'Change this task name  "add task" button in the project header',
+        attachments: [],
+    },
 ];
 const createTasks = () => {
     const tasks = {};
