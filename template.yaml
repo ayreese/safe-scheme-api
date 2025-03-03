@@ -330,10 +330,10 @@ Resources:
                   Required: true
                   Caching: false
 
-  PostConfirmationFunction:
+  DemoProjectFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: dist/src/handlers/post-confirmation.demoProjectHandler
+      Handler: dist/src/handlers/demo-project.demoProjectHandler
       Description: Creates a demo project when a new user is confirmed in Cognito
       Policies:
         - DynamoDBCrudPolicy:
@@ -344,7 +344,7 @@ Resources:
           Properties:
             RestApiId: !Ref SafeSchemeAPI
             Path: /demo-project
-            Method: Post
+            Method: POST
 
 
 
