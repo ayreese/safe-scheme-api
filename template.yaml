@@ -374,6 +374,8 @@ Resources:
     Type: AWS::Cognito::UserPool
     Properties:
       UserPoolName: SafeSchemeUserPool
+      LambdaConfig:
+        PostConfirmation: arn:aws:lambda:us-east-1:976193231846:function:safe-scheme-DemoProjectFunction-EUPk1dOjhdsJ
       AutoVerifiedAttributes:
         - email
       AccountRecoverySetting:
