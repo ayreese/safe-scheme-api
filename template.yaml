@@ -116,7 +116,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: dist/src/handlers/create-project.createProjectHandler
-      Description: Create project for authenticated user
+      Description: Create project
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ProjectsTable
@@ -197,7 +197,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: dist/src/handlers/create-task.createTaskHandler
-      Description: Create task for a project for an authenticated user
+      Description: Create task for a project
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ProjectsTable
@@ -266,7 +266,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: dist/src/handlers/create-subtask.createSubtaskHandler
-      Description: Create subtask for a project for an authenticated user
+      Description: Create subtask for a task
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ProjectsTable
@@ -314,7 +314,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: dist/src/handlers/delete-subtask.deleteSubtaskHandler
-      Description: Delete task function
+      Description: Delete subtask function
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ProjectsTable
@@ -349,8 +349,6 @@ Resources:
               Model: Project
               Required: false
               ValidateBody: false
-
-
 
   #DynamoDB Tables
   ProjectsTable:
