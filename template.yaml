@@ -425,6 +425,7 @@ Resources:
       Principal: cognito-idp.amazonaws.com
       SourceArn: arn:aws:cognito-idp:us-east-1:976193231846:userpool/us-east-1_op7zWwtF8
 
+
   SafeSchemeUserPoolClient:
     Type: AWS::Cognito::UserPoolClient
     Properties:
