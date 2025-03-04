@@ -1,25 +1,23 @@
-import { APIGatewayProxyResult, PostConfirmationTriggerEvent} from 'aws-lambda';
+import { PostConfirmationTriggerEvent } from 'aws-lambda';
 import crypto from 'crypto';
-import { PutCommand } from '@aws-sdk/lib-dynamodb';
-import { client } from '../../utils/dynamoClient';
-const { createTasks } = require('../../utils/tasks');
+import {PutCommand} from '@aws-sdk/lib-dynamodb';
+import {client} from '../../utils/dynamoClient';
 
-import {responseHeaders} from "../../utils/headers";
+const {createTasks} = require('../../utils/tasks');
 
 
-export const demoProjectHandler = async (event: PostConfirmationTriggerEvent): Promise<APIGatewayProxyResult> => {
+
+export const demoProjectHandler = async (event: PostConfirmationTriggerEvent): Promise<void> => {
     const tableName = process.env.PROJECTS_TABLE;
 
     if (!tableName) {
+        console.error('PROJECTS_TABLE environment variable is not set.');
         throw new Error('PROJECTS_TABLE environment variable is not set.');
     }
 
     if (!event.userName) {
-        return {
-            statusCode: 400,
-            body: JSON.stringify({ message: "Request authorization are required" }),
-            headers: responseHeaders
-        };
+        console.error('No user name');
+        throw new Error('no userName variable is set.');
     }
 
     const userId = event.userName;
@@ -38,21 +36,7 @@ export const demoProjectHandler = async (event: PostConfirmationTriggerEvent): P
                 },
             }),
         );
-
-        return {
-            statusCode: 200,
-            body: JSON.stringify({ message: 'Created project', ProjectId: projectId }),
-            headers: responseHeaders
-        };
     } catch (error: any) {
         console.error('Error creating project:', error);
-        return {
-            statusCode: 500,
-            body: JSON.stringify({
-                message: 'Failed to create project',
-                error: error.message,
-            }),
-            headers: responseHeaders
-        };
     }
 };
