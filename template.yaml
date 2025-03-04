@@ -179,8 +179,8 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: dist/src/handlers/delete-project.deleteProjectHandler
-      Tracing: Active
       Description: Delete project function
+      Tracing: Active
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ProjectsTable
