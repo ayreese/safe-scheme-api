@@ -3,7 +3,6 @@ import crypto from 'crypto';
 interface TaskList {
     name: string;
     description: string;
-    attachments: string[];
 }
 
 interface Task {
@@ -11,7 +10,7 @@ interface Task {
     Task: string;
     Description: string;
     Status: string;
-    Subtasks: [key: string] | NonNullable<unknown>;
+    Subtasks: Record<string, unknown>;
     Attachments: string[];
 }
 
@@ -23,23 +22,19 @@ const tasksList: TaskList[] = [
     {
         name: 'Create Project',
         description: 'Create a project using the "create project" button in the projects panel',
-        attachments: [],
     },
     {
         name: 'Create Task',
         description: 'Create a task using the "add task" button in the project header',
-        attachments: [],
     },
     {
         name: 'Edit Task',
         description: 'Change this task name  "add task" button in the project header',
-        attachments: [],
     },
 ];
 
-export const createTasks = () => {
-    const tasks: Tasks = {};
-    tasksList.forEach((task) => {
+export const createTasks = (): Tasks => {
+    return tasksList.reduce((tasks, task) => {
         const taskId = crypto.randomUUID();
         tasks[taskId] = {
             TaskId: taskId,
@@ -49,7 +44,6 @@ export const createTasks = () => {
             Subtasks: {},
             Attachments: [],
         };
-    });
-    console.log(tasks);
-    return tasks;
+        return tasks;
+    }, {} as Tasks);
 };

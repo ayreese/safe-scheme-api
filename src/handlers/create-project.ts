@@ -1,10 +1,10 @@
-import { APIGatewayEvent } from "aws-lambda";
+import {APIGatewayEvent, APIGatewayProxyResult} from "aws-lambda";
 import crypto from 'crypto';
 import { PutCommand } from "@aws-sdk/lib-dynamodb";
 import { client } from "../../utils/dynamoClient";
 import {responseHeaders} from "../../utils/headers";
 
-export const createProjectHandler = async (event: APIGatewayEvent) => {
+export const createProjectHandler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     if (!event.body || !event.requestContext.authorizer) {
         return {
             statusCode: 400,

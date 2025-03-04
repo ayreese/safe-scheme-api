@@ -334,7 +334,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: dist/src/handlers/demo-project.demoProjectHandler
-      Description: Creates a demo project when a new user is confirmed in Cognito
+      Description: Creates a demo project for new users
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ProjectsTable
@@ -345,6 +345,10 @@ Resources:
             RestApiId: !Ref SafeSchemeAPI
             Path: /demo-project
             Method: POST
+            RequestModel:
+              Model: Project
+              Required: false
+              ValidateBody: false
 
 
 

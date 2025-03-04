@@ -1,14 +1,12 @@
 import {APIGatewayEvent, APIGatewayProxyResult} from 'aws-lambda';
 import crypto from 'crypto';
 import { PutCommand } from '@aws-sdk/lib-dynamodb';
-import { client } from '../../utils/dynamoClient'; // Your DynamoDB client
-import { createTasks } from '../../utils/tasks';
-import {responseHeaders} from "../../utils/headers"; // A helper function that creates tasks
+import { client } from '../../utils/dynamoClient';
+const { createTasks } = require('../../utils/tasks');
 
-/**
- * This function is triggered by Cognito after user confirmation.
- * It will create a demo project for the new user.
- */
+import {responseHeaders} from "../../utils/headers";
+
+
 export const demoProjectHandler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     const tableName = process.env.PROJECTS_TABLE;
 
@@ -27,16 +25,16 @@ export const demoProjectHandler = async (event: APIGatewayEvent): Promise<APIGat
     const userId = event.requestContext.authorizer.claims.sub;
 
     try {
-        const projectId = crypto.randomUUID(); // Generate a unique project ID
+        const projectId = crypto.randomUUID();
         await client.send(
             new PutCommand({
                 TableName: tableName,
                 Item: {
                     UserId: userId,
                     ProjectId: projectId,
-                    Project: 'Learn Safe Scheme', // A demo project
-                    Status: false, // Project status (e.g., not started)
-                    Tasks: createTasks(), // Initial tasks
+                    Project: 'Learn Safe Scheme',
+                    Status: false,
+                    Tasks: createTasks(),
                 },
             }),
         );
@@ -44,9 +42,7 @@ export const demoProjectHandler = async (event: APIGatewayEvent): Promise<APIGat
         return {
             statusCode: 200,
             body: JSON.stringify({ message: 'Created project', ProjectId: projectId }),
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: responseHeaders
         };
     } catch (error: any) {
         console.error('Error creating project:', error);
@@ -56,9 +52,7 @@ export const demoProjectHandler = async (event: APIGatewayEvent): Promise<APIGat
                 message: 'Failed to create project',
                 error: error.message,
             }),
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: responseHeaders
         };
     }
 };

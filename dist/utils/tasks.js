@@ -9,22 +9,18 @@ const tasksList = [
     {
         name: 'Create Project',
         description: 'Create a project using the "create project" button in the projects panel',
-        attachments: [],
     },
     {
         name: 'Create Task',
         description: 'Create a task using the "add task" button in the project header',
-        attachments: [],
     },
     {
         name: 'Edit Task',
         description: 'Change this task name  "add task" button in the project header',
-        attachments: [],
     },
 ];
 const createTasks = () => {
-    const tasks = {};
-    tasksList.forEach((task) => {
+    return tasksList.reduce((tasks, task) => {
         const taskId = crypto_1.default.randomUUID();
         tasks[taskId] = {
             TaskId: taskId,
@@ -34,8 +30,7 @@ const createTasks = () => {
             Subtasks: {},
             Attachments: [],
         };
-    });
-    console.log(tasks);
-    return tasks;
+        return tasks;
+    }, {});
 };
 exports.createTasks = createTasks;

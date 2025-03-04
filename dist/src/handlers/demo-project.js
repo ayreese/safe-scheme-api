@@ -6,13 +6,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.demoProjectHandler = void 0;
 const crypto_1 = __importDefault(require("crypto"));
 const lib_dynamodb_1 = require("@aws-sdk/lib-dynamodb");
-const dynamoClient_1 = require("../../utils/dynamoClient"); // Your DynamoDB client
-const tasks_1 = require("../../utils/tasks");
-const headers_1 = require("../../utils/headers"); // A helper function that creates tasks
-/**
- * This function is triggered by Cognito after user confirmation.
- * It will create a demo project for the new user.
- */
+const dynamoClient_1 = require("../../utils/dynamoClient");
+const { createTasks } = require('../../utils/tasks');
+const headers_1 = require("../../utils/headers");
 const demoProjectHandler = async (event) => {
     const tableName = process.env.PROJECTS_TABLE;
     if (!tableName) {
@@ -27,23 +23,21 @@ const demoProjectHandler = async (event) => {
     }
     const userId = event.requestContext.authorizer.claims.sub;
     try {
-        const projectId = crypto_1.default.randomUUID(); // Generate a unique project ID
+        const projectId = crypto_1.default.randomUUID();
         await dynamoClient_1.client.send(new lib_dynamodb_1.PutCommand({
             TableName: tableName,
             Item: {
                 UserId: userId,
                 ProjectId: projectId,
-                Project: 'Learn Safe Scheme', // A demo project
-                Status: false, // Project status (e.g., not started)
-                Tasks: (0, tasks_1.createTasks)(), // Initial tasks
+                Project: 'Learn Safe Scheme',
+                Status: false,
+                Tasks: createTasks(),
             },
         }));
         return {
             statusCode: 200,
             body: JSON.stringify({ message: 'Created project', ProjectId: projectId }),
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: headers_1.responseHeaders
         };
     }
     catch (error) {
@@ -54,9 +48,7 @@ const demoProjectHandler = async (event) => {
                 message: 'Failed to create project',
                 error: error.message,
             }),
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: headers_1.responseHeaders
         };
     }
 };
