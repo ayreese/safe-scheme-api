@@ -339,16 +339,13 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: !Ref ProjectsTable
       Events:
-        Api:
-          Type: Api
+        NewUserDemoProjectCreation:
+          Type: Cognito
           Properties:
-            RestApiId: !Ref SafeSchemeAPI
-            Path: /demo-project
-            Method: POST
-            RequestModel:
-              Model: Project
-              Required: false
-              ValidateBody: false
+            UserPool: !Ref SafeSchemeUserPool
+            Trigger: PostConfirmation
+    DependsOn: SafeSchemeUserPool
+
 
   #DynamoDB Tables
   ProjectsTable:
