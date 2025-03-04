@@ -8,18 +8,15 @@ const crypto_1 = __importDefault(require("crypto"));
 const lib_dynamodb_1 = require("@aws-sdk/lib-dynamodb");
 const dynamoClient_1 = require("../../utils/dynamoClient");
 const { createTasks } = require('../../utils/tasks');
-const headers_1 = require("../../utils/headers");
 const demoProjectHandler = async (event) => {
     const tableName = process.env.PROJECTS_TABLE;
     if (!tableName) {
+        console.error('PROJECTS_TABLE environment variable is not set.');
         throw new Error('PROJECTS_TABLE environment variable is not set.');
     }
     if (!event.userName) {
-        return {
-            statusCode: 400,
-            body: JSON.stringify({ message: "Request authorization are required" }),
-            headers: headers_1.responseHeaders
-        };
+        console.error('No user name');
+        throw new Error('no userName variable is set.');
     }
     const userId = event.userName;
     try {
@@ -34,22 +31,9 @@ const demoProjectHandler = async (event) => {
                 Tasks: createTasks(),
             },
         }));
-        return {
-            statusCode: 200,
-            body: JSON.stringify({ message: 'Created project', ProjectId: projectId }),
-            headers: headers_1.responseHeaders
-        };
     }
     catch (error) {
         console.error('Error creating project:', error);
-        return {
-            statusCode: 500,
-            body: JSON.stringify({
-                message: 'Failed to create project',
-                error: error.message,
-            }),
-            headers: headers_1.responseHeaders
-        };
     }
 };
 exports.demoProjectHandler = demoProjectHandler;

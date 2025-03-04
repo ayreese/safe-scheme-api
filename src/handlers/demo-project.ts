@@ -2,7 +2,6 @@ import { PostConfirmationTriggerEvent } from 'aws-lambda';
 import crypto from 'crypto';
 import {PutCommand} from '@aws-sdk/lib-dynamodb';
 import {client} from '../../utils/dynamoClient';
-
 const {createTasks} = require('../../utils/tasks');
 
 
