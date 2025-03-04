@@ -338,13 +338,7 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ProjectsTable
-      Events:
-        NewUserDemoProjectCreation:
-          Type: Cognito
-          Properties:
-            UserPool: !Ref SafeSchemeUserPool
-            Trigger: PostConfirmation
-    DependsOn: SafeSchemeUserPool
+
 
 
   #DynamoDB Tables
@@ -402,6 +396,8 @@ Resources:
           NumberAttributeConstraints:
             MaxValue: "16"
             MinValue: "2"
+      LambdaConfig:
+        PostConfirmation: arn:aws:lambda:us-east-1:976193231846:function:safe-scheme-DemoProjectFunction-4vFWeZGyUrZb
       EmailConfiguration:
         EmailSendingAccount: COGNITO_DEFAULT
       VerificationMessageTemplate:

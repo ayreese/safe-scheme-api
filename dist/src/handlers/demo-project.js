@@ -14,14 +14,14 @@ const demoProjectHandler = async (event) => {
     if (!tableName) {
         throw new Error('PROJECTS_TABLE environment variable is not set.');
     }
-    if (!event.requestContext.authorizer) {
+    if (!event.userName) {
         return {
             statusCode: 400,
             body: JSON.stringify({ message: "Request authorization are required" }),
             headers: headers_1.responseHeaders
         };
     }
-    const userId = event.requestContext.authorizer.claims.sub;
+    const userId = event.userName;
     try {
         const projectId = crypto_1.default.randomUUID();
         await dynamoClient_1.client.send(new lib_dynamodb_1.PutCommand({

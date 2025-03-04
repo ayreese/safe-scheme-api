@@ -1,4 +1,4 @@
-import {APIGatewayEvent, APIGatewayProxyResult} from 'aws-lambda';
+import { APIGatewayProxyResult, PostConfirmationTriggerEvent} from 'aws-lambda';
 import crypto from 'crypto';
 import { PutCommand } from '@aws-sdk/lib-dynamodb';
 import { client } from '../../utils/dynamoClient';
@@ -7,14 +7,14 @@ const { createTasks } = require('../../utils/tasks');
 import {responseHeaders} from "../../utils/headers";
 
 
-export const demoProjectHandler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
+export const demoProjectHandler = async (event: PostConfirmationTriggerEvent): Promise<APIGatewayProxyResult> => {
     const tableName = process.env.PROJECTS_TABLE;
 
     if (!tableName) {
         throw new Error('PROJECTS_TABLE environment variable is not set.');
     }
 
-    if (!event.requestContext.authorizer) {
+    if (!event.userName) {
         return {
             statusCode: 400,
             body: JSON.stringify({ message: "Request authorization are required" }),
@@ -22,7 +22,7 @@ export const demoProjectHandler = async (event: APIGatewayEvent): Promise<APIGat
         };
     }
 
-    const userId = event.requestContext.authorizer.claims.sub;
+    const userId = event.userName;
 
     try {
         const projectId = crypto.randomUUID();
