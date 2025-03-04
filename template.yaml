@@ -117,6 +117,7 @@ Resources:
     Properties:
       Handler: dist/src/handlers/create-project.createProjectHandler
       Description: Create project
+      Tracing: Active
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ProjectsTable
@@ -137,6 +138,7 @@ Resources:
     Properties:
       Handler: dist/src/handlers/get-projects.getProjectsHandler
       Description: Get user projects function
+      Tracing: Active
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ProjectsTable
@@ -153,6 +155,7 @@ Resources:
     Properties:
       Handler: dist/src/handlers/edit-project.editProjectHandler
       Description: Edit project function
+      Tracing: Active
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ProjectsTable
@@ -176,6 +179,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: dist/src/handlers/delete-project.deleteProjectHandler
+      Tracing: Active
       Description: Delete project function
       Policies:
         - DynamoDBCrudPolicy:
@@ -197,6 +201,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: dist/src/handlers/create-task.createTaskHandler
+      Tracing: Active
       Description: Create task for a project
       Policies:
         - DynamoDBCrudPolicy:
@@ -221,6 +226,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: dist/src/handlers/edit-task.editTaskHandler
+      Tracing: Active
       Description: Edit task function
       Policies:
         - DynamoDBCrudPolicy:
@@ -245,6 +251,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: dist/src/handlers/delete-task.deleteTaskHandler
+      Tracing: Active
       Description: Delete task function
       Policies:
         - DynamoDBCrudPolicy:
@@ -266,6 +273,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: dist/src/handlers/create-subtask.createSubtaskHandler
+      Tracing: Active
       Description: Create subtask for a task
       Policies:
         - DynamoDBCrudPolicy:
@@ -290,6 +298,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: dist/src/handlers/edit-subtask.editSubtaskHandler
+      Tracing: Active
       Description: Edit subtask function
       Policies:
         - DynamoDBCrudPolicy:
@@ -315,6 +324,7 @@ Resources:
     Properties:
       Handler: dist/src/handlers/delete-subtask.deleteSubtaskHandler
       Description: Delete subtask function
+      Tracing: Active
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ProjectsTable
@@ -335,6 +345,7 @@ Resources:
     Properties:
       Handler: dist/src/handlers/demo-project.demoProjectHandler
       Description: Creates a demo project for new users
+      Tracing: Active
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ProjectsTable
@@ -396,8 +407,7 @@ Resources:
           NumberAttributeConstraints:
             MaxValue: "16"
             MinValue: "2"
-      LambdaConfig:
-        PostConfirmation: arn:aws:lambda:us-east-1:976193231846:function:safe-scheme-DemoProjectFunction-4vFWeZGyUrZb
+
       EmailConfiguration:
         EmailSendingAccount: COGNITO_DEFAULT
       VerificationMessageTemplate:
