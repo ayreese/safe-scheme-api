@@ -423,7 +423,7 @@ Resources:
       Action: lambda:InvokeFunction
       FunctionName: !Ref demoProjectFunction
       Principal: cognito-idp.amazonaws.com
-      SourceArn: !Ref demoProjectFunction
+      SourceArn: !Ref SafeSchemeUserPool
 
   SafeSchemeUserPoolClient:
     Type: AWS::Cognito::UserPoolClient
