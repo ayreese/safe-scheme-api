@@ -340,7 +340,7 @@ Resources:
                   Required: true
                   Caching: false
 
-  DemoProjectFunction:
+  demoProjectFunction:
     Type: AWS::Serverless::Function
     Properties:
       Handler: dist/src/handlers/demo-project.demoProjectHandler
@@ -374,8 +374,8 @@ Resources:
     Type: AWS::Cognito::UserPool
     Properties:
       UserPoolName: SafeSchemeUserPool
-      LambdaConfig:
-        PostConfirmation: arn:aws:lambda:us-east-1:976193231846:function:safe-scheme-DemoProjectFunction-EUPk1dOjhdsJ
+#      LambdaConfig:
+#        PostConfirmation: arn:aws:lambda:us-east-1:976193231846:function:safe-scheme-DemoProjectFunction-EUPk1dOjhdsJ
       AutoVerifiedAttributes:
         - email
       AccountRecoverySetting:
@@ -417,6 +417,13 @@ Resources:
         EmailMessage: "Your verification code is {####}."
         EmailSubject: "Verify your email address"
 
+  LambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref demoProjectFunction
+      Principal: cognito-idp.amazonaws.com
+      SourceArn: !Ref demoProjectFunction
 
   SafeSchemeUserPoolClient:
     Type: AWS::Cognito::UserPoolClient
