@@ -7,50 +7,40 @@ const headers_1 = require("../../utils/headers");
 const getProjectsHandler = async (event) => {
     const table = process.env.PROJECTS_TABLE;
     if (!table) {
-        console.warn(`No table name provided`);
-        throw new Error("No table name provided");
+        console.warn(`Environment variable PROJECT_TABLE is missing, cannot query DynamoDB`);
+        throw new Error("Database error");
     }
     // Check for the necessary authorization info
-    if (!event.requestContext.authorizer) {
-        console.error("missing authorizer event");
+    if (!event.requestContext.authorizer || !event.requestContext.authorizer.claims.sub) {
+        console.error("missing authorizer event, unable to get user");
         return {
             statusCode: 401,
-            body: JSON.stringify({ message: "Unauthorized request" }),
+            body: JSON.stringify({ message: "request missing user, token not read" }),
             headers: headers_1.responseHeaders
         };
     }
     try {
         const userId = event.requestContext.authorizer.claims.sub;
-        const { Items } = await dynamoClient_1.client.send(new lib_dynamodb_1.QueryCommand({
+        const data = await dynamoClient_1.client.send(new lib_dynamodb_1.QueryCommand({
             TableName: table,
             KeyConditionExpression: "UserId = :UserId",
             ExpressionAttributeValues: {
                 ":UserId": userId,
             },
         }));
-        if (Items && Items.length > 0) {
-            // Projects found, return them
-            return {
-                statusCode: 200,
-                body: JSON.stringify({ projects: Items }),
-                headers: headers_1.responseHeaders
-            };
-        }
-        else {
-            // No projects found
-            console.warn('No projects found for UserId:', userId);
-            return {
-                statusCode: 404,
-                body: JSON.stringify({ message: "No projects found" }),
-                headers: headers_1.responseHeaders
-            };
-        }
+        const statusCode = data.$metadata.httpStatusCode;
+        const items = data.Items;
+        return {
+            statusCode: statusCode,
+            body: JSON.stringify({ message: `Number of projects found ${items?.length}`, projects: items }),
+            headers: headers_1.responseHeaders
+        };
     }
     catch (error) {
-        console.error('Error occurred while querying DynamoDB:', error.message);
+        console.error('Error occurred while querying DynamoDB:', error.message, error);
         return {
             statusCode: 500,
-            body: JSON.stringify({ message: "Failed to retrieve projects", error: error.message }),
+            body: JSON.stringify({ message: "Failed to retrieve projects due to a server error", error: error.message }),
             headers: headers_1.responseHeaders
         };
     }

@@ -34,17 +34,15 @@ Resources:
           ResponseTemplates:
             application/json: { "message": "Invalid or expired token" }
       Auth:
-        DefaultAuthorizer: CognitoAuthorizer
         Authorizers:
           CognitoAuthorizer:
+            AuthorizationScopes: [openid, email, profile]
             UserPoolArn:
               Fn::GetAtt: [ SafeSchemeUserPool, Arn ]
             Identity:
               Header: Authorization
-            AuthorizationScopes:
-              - openid
-              - profile
-              - email
+              ReauthorizeEvery: 30
+
       Models:
         Project:
           type: object
@@ -147,7 +145,7 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref SafeSchemeAPI
-            Path: /get-projects/{UserId}
+            Path: /get-projects
             Method: GET
 
   editProjectFunction:
