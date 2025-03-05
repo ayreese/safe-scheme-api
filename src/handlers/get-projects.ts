@@ -13,6 +13,7 @@ export const getProjectsHandler = async (event: APIGatewayEvent) => {
     // Check for the necessary authorization info
     if (!event.requestContext.authorizer || !event.requestContext.authorizer.claims.sub) {
         console.error("missing authorizer event, unable to get user");
+        console.log("Event received", event);
         return {
             statusCode: 401,
             body: JSON.stringify({ message: "request missing user, token not read" }),
