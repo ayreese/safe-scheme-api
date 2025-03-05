@@ -421,7 +421,7 @@ Resources:
       Action: lambda:InvokeFunction
       FunctionName: !Ref demoProjectFunction
       Principal: cognito-idp.amazonaws.com
-      SourceArn: arn:aws:cognito-idp:us-east-1:976193231846:userpool/us-east-1_op7zWwtF8
+      SourceArn: arn:aws:cognito-idp:us-east-1:976193231846:userpool/us-east-1_HflfE33BZ
 
 
   SafeSchemeUserPoolClient:
