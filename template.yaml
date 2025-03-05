@@ -42,6 +42,7 @@ Resources:
             Identity:
               Header: Authorization
               ReauthorizeEvery: 30
+        DefaultAuthorizer: CognitoAuthorizer
 
       Models:
         Project:
