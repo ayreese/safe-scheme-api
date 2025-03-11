@@ -8,6 +8,7 @@ const crypto_1 = __importDefault(require("crypto"));
 const lib_dynamodb_1 = require("@aws-sdk/lib-dynamodb");
 const dynamoClient_1 = require("../../utils/dynamoClient");
 const headers_1 = require("../../utils/headers");
+const { createPhases } = require(`../../utils/phases`);
 const createProjectHandler = async (event) => {
     if (!event.body || !event.requestContext.authorizer) {
         return {
@@ -21,9 +22,9 @@ const createProjectHandler = async (event) => {
     if (!tableName) {
         throw new Error("PROJECTS_TABLE environment variable is not set.");
     }
-    const { Project: projectName, Status: status } = project;
-    const userId = event.requestContext.authorizer.claims.sub; // Get userId from event
-    if (!projectName || !status) {
+    const { Name: name, Phases: phasesArray } = project;
+    const userId = event.requestContext.authorizer.claims.sub;
+    if (!name || !phasesArray) {
         return {
             statusCode: 400,
             body: JSON.stringify({ message: "Project name and status are required" }),
@@ -37,8 +38,8 @@ const createProjectHandler = async (event) => {
             Item: {
                 UserId: userId,
                 ProjectId: projectId,
-                Project: projectName,
-                Status: status,
+                Project: name,
+                Phases: createPhases(phasesArray),
                 Tasks: {},
             }
         }));

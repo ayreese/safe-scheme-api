@@ -2,8 +2,8 @@ import { PostConfirmationTriggerEvent } from 'aws-lambda';
 import crypto from 'crypto';
 import {PutCommand} from '@aws-sdk/lib-dynamodb';
 import {client} from '../../utils/dynamoClient';
-const {createTasks} = require('../../utils/tasks');
-
+import {tasksList} from "../../utils/tasks";
+import {createPhases, phaseTask} from '../../utils/functions';
 
 
 export const demoProjectHandler = async (event: PostConfirmationTriggerEvent): Promise<void> => {
@@ -22,6 +22,7 @@ export const demoProjectHandler = async (event: PostConfirmationTriggerEvent): P
     const userId = event.userName;
 
     try {
+        const phaseValues = createPhases(["Todo", "In Progress", "Complete"])
         const projectId = crypto.randomUUID();
         await client.send(
             new PutCommand({
@@ -30,8 +31,9 @@ export const demoProjectHandler = async (event: PostConfirmationTriggerEvent): P
                     UserId: userId,
                     ProjectId: projectId,
                     Project: 'Learn Safe Scheme',
+                    Phases: phaseTask(phaseValues, tasksList),
                     Status: false,
-                    Tasks: createTasks(),
+
                 },
             }),
         );

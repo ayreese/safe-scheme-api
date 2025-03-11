@@ -7,7 +7,8 @@ exports.demoProjectHandler = void 0;
 const crypto_1 = __importDefault(require("crypto"));
 const lib_dynamodb_1 = require("@aws-sdk/lib-dynamodb");
 const dynamoClient_1 = require("../../utils/dynamoClient");
-const { createTasks } = require('../../utils/tasks');
+const tasks_1 = require("../../utils/tasks");
+const functions_1 = require("../../utils/functions");
 const demoProjectHandler = async (event) => {
     const tableName = process.env.PROJECTS_TABLE;
     if (!tableName) {
@@ -20,6 +21,7 @@ const demoProjectHandler = async (event) => {
     }
     const userId = event.userName;
     try {
+        const phaseValues = (0, functions_1.createPhases)(["Todo", "In Progress", "Complete"]);
         const projectId = crypto_1.default.randomUUID();
         await dynamoClient_1.client.send(new lib_dynamodb_1.PutCommand({
             TableName: tableName,
@@ -27,8 +29,8 @@ const demoProjectHandler = async (event) => {
                 UserId: userId,
                 ProjectId: projectId,
                 Project: 'Learn Safe Scheme',
+                Phases: (0, functions_1.phaseTask)(phaseValues, tasks_1.tasksList),
                 Status: false,
-                Tasks: createTasks(),
             },
         }));
     }

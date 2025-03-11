@@ -36,7 +36,6 @@ Resources:
       Auth:
         Authorizers:
           CognitoAuthorizer:
-            AuthorizationScopes: [openid, email, profile]
             UserPoolArn:
               Fn::GetAtt: [ SafeSchemeUserPool, Arn ]
             Identity:
@@ -430,7 +429,11 @@ Resources:
     Properties:
       UserPoolId: !Ref SafeSchemeUserPool
       ClientName: SafeSchemeUserPoolClient
-      AccessTokenValidity: 10
+      AccessTokenValidity: 24
+      TokenValidityUnits:
+        AccessToken: hours
+        IdToken: hours
+        RefreshToken: days
       GenerateSecret: false
       AllowedOAuthFlows:
         - code

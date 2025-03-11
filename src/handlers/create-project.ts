@@ -1,17 +1,20 @@
 import {APIGatewayEvent, APIGatewayProxyResult} from "aws-lambda";
 import crypto from 'crypto';
-import { PutCommand } from "@aws-sdk/lib-dynamodb";
-import { client } from "../../utils/dynamoClient";
+import {PutCommand} from "@aws-sdk/lib-dynamodb";
+import {client} from "../../utils/dynamoClient";
 import {responseHeaders} from "../../utils/headers";
+const {createPhases} = require(`../../utils/phases`);
 
 export const createProjectHandler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     if (!event.body || !event.requestContext.authorizer) {
         return {
             statusCode: 400,
-            body: JSON.stringify({ message: "Request body and authorization are required" }),
+            body: JSON.stringify({message: "Request body and authorization are required"}),
             headers: responseHeaders
         };
     }
+
+
 
     const project = JSON.parse(event.body);
     const tableName = process.env.PROJECTS_TABLE;
@@ -20,16 +23,18 @@ export const createProjectHandler = async (event: APIGatewayEvent): Promise<APIG
         throw new Error("PROJECTS_TABLE environment variable is not set.");
     }
 
-    const { Project: projectName, Status: status } = project;
-    const userId = event.requestContext.authorizer.claims.sub; // Get userId from event
+    const {Name: name, Phases: phasesArray} = project;
+    const userId = event.requestContext.authorizer.claims.sub;
 
-    if (!projectName || !status) {
+    if (!name || !phasesArray) {
         return {
             statusCode: 400,
-            body: JSON.stringify({ message: "Project name and status are required" }),
+            body: JSON.stringify({message: "Project name and status are required"}),
             headers: responseHeaders
         };
     }
+
+
 
     try {
         const projectId = crypto.randomUUID();
@@ -38,15 +43,15 @@ export const createProjectHandler = async (event: APIGatewayEvent): Promise<APIG
             Item: {
                 UserId: userId,
                 ProjectId: projectId,
-                Project: projectName,
-                Status: status,
+                Project: name,
+                Phases: createPhases(phasesArray),
                 Tasks: {},
             }
         }));
 
         return {
             statusCode: 200,
-            body: JSON.stringify({ message: "Created project", ProjectId: projectId }),
+            body: JSON.stringify({message: "Created project", ProjectId: projectId}),
             headers: responseHeaders
         };
     } catch (error: any) {
