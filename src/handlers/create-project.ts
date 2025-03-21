@@ -3,7 +3,7 @@ import crypto from 'crypto';
 import {PutCommand} from "@aws-sdk/lib-dynamodb";
 import {client} from "../../utils/dynamoClient";
 import {responseHeaders} from "../../utils/headers";
-const {createPhases} = require(`../../utils/functions`);
+const {createPhases} = require("../../utils/functions");
 
 export const createProjectHandler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     if (!event.body || !event.requestContext.authorizer) {
