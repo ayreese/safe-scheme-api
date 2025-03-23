@@ -6,5 +6,6 @@ const lib_dynamodb_1 = require("@aws-sdk/lib-dynamodb");
 const config = new client_dynamodb_1.DynamoDBClient({
     region: "us-east-1",
     logger: console,
+    endpoint: "http://host.docker.internal:8000"
 });
 exports.client = lib_dynamodb_1.DynamoDBDocumentClient.from(config);

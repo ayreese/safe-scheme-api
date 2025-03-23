@@ -24,7 +24,14 @@ const editSubtaskHandler = async (event) => {
     }
     const userId = event.requestContext.authorizer.claims.sub;
     const subtaskParameters = JSON.parse(event.body);
-    const { Description: description, Status: status } = subtaskParameters;
+    const { Phase: phase, Status: status } = subtaskParameters;
+    if (!phase || !status) {
+        return {
+            statusCode: 400,
+            body: JSON.stringify({ message: "Missing Phase or Status in subtask parameters" }),
+            headers: headers_1.responseHeaders
+        };
+    }
     const projectId = event.pathParameters.ProjectId;
     const taskId = event.pathParameters.TaskId;
     const subtaskId = event.pathParameters.SubtaskId;
@@ -42,14 +49,15 @@ const editSubtaskHandler = async (event) => {
                 UserId: userId,
                 ProjectId: projectId,
             },
-            UpdateExpression: 'SET Tasks.#TaskId.Subtasks.#SubtaskId.Description = :Description, Tasks.#TaskId.Subtasks.#SubtaskId.Status = :Status',
+            UpdateExpression: 'SET Phases.#Phase.#TaskId.subtasks.#SubtaskId.#Status = :Status',
             ExpressionAttributeNames: {
+                "#Phase": phase,
                 "#TaskId": taskId,
                 "#SubtaskId": subtaskId,
+                "#Status": "status"
             },
             ExpressionAttributeValues: {
-                ":Description": description,
-                ":Status": status,
+                ":Status": status
             },
         }));
         return {

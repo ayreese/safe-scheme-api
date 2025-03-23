@@ -8,7 +8,7 @@ const crypto_1 = __importDefault(require("crypto"));
 const lib_dynamodb_1 = require("@aws-sdk/lib-dynamodb");
 const dynamoClient_1 = require("../../utils/dynamoClient");
 const headers_1 = require("../../utils/headers");
-const { createPhases } = require(`../../utils/functions`);
+const { createPhases } = require("../../utils/functions");
 const createProjectHandler = async (event) => {
     if (!event.body || !event.requestContext.authorizer) {
         return {

@@ -1,0 +1,20 @@
+{
+  "body": "{\"Phase\": \"Todo\", \"Status\": true}",
+  "requestContext": {
+    "authorizer": {
+      "claims": {
+        "sub": "test-user-123"
+      }
+    }
+  },
+  "pathParameters": {
+    "ProjectId": "e474b315-bb2a-4382-bba9-8ea486c901e1",
+    "TaskId": "539cb7aa-3180-4b9a-823e-2de1ccb8fd54",
+    "SubtaskId": "3095091834"
+  },
+  "resource": "/edit-subtask/{ProjectId}/{TaskId}/{SubtaskId}",
+  "httpMethod": "PUT",
+  "headers": {
+    "Content-Type": "application/json"
+  }
+}
