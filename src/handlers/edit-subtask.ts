@@ -15,8 +15,19 @@ export const editSubtaskHandler = async (event: APIGatewayEvent) => {
         };
     }
 
-    if (!event.body || !event.requestContext.authorizer || !event.pathParameters) {
-        console.error("Function parameters not provided:", event);
+    if (!event.requestContext.authorizer || !event.requestContext.authorizer.claims.sub) {
+        console.error("missing authorizer event, unable to get user");
+        console.log("Event received", event);
+        return {
+            statusCode: 401,
+            body: JSON.stringify({ message: "request missing user, token not read" }),
+            headers: responseHeaders
+        };
+    }
+
+    if (!event.body || !event.pathParameters) {
+        console.log("Event body:", event.body);
+        console.log("Event path parameters:", event.pathParameters);
         return {
             statusCode: 400,
             body: JSON.stringify({message: "Missing required parameters (body, user, taskId, subtaskId)"}),

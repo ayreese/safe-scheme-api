@@ -308,14 +308,10 @@ Resources:
             RestApiId: !Ref SafeSchemeAPI
             Path: /edit-subtask/{ProjectId}/{TaskId}/{SubtaskId}
             RequestParameters:
-              - method.request.path.ProjectId.TaskId.SubtaskId:
-                  Required: true
-                  Caching: false
+              - method.request.path.ProjectId:
+              - method.request.path.TaskId:
+              - method.request.path.SubtaskId:
             Method: PUT
-            RequestModel:
-              Model: Subtask
-              Required: true
-              ValidateBody: true
 
   deleteSubtaskFunction:
     Type: AWS::Serverless::Function
