@@ -306,17 +306,7 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref SafeSchemeAPI
-            Path: /edit-subtask/{ProjectId}/{TaskId}/{SubtaskId}
-            RequestParameters:
-              - method.request.path.ProjectId:
-                  Required: true
-                  Caching: false
-              - method.request.path.TaskId:
-                  Required: true
-                  Caching: false
-              - method.request.path.SubtaskId:
-                  Required: true
-                  Caching: false
+            Path: /edit-subtask
             Method: PUT
 
   deleteSubtaskFunction:

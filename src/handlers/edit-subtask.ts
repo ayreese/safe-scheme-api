@@ -13,27 +13,32 @@ export const editSubtaskHandler = async (event: APIGatewayEvent) => {
     if (!event.requestContext.authorizer) {
         console.error("missing authorizer event, unable to get user");
         console.log("Event received", event);
-
         return {
             statusCode: 401,
-            body: JSON.stringify({ message: "request missing user, token not read" }),
+            body: JSON.stringify({message: "request missing user, token not read"}),
             headers: responseHeaders
         };
     }
 
-    if (!event.body || !event.pathParameters) {
+    if (!event.body) {
         console.log("Event body:", event.body);
-        console.log("Event path parameters:", event.pathParameters);
         return {
             statusCode: 400,
-            body: JSON.stringify({message: "Missing required parameters (body, user, taskId, subtaskId)"}),
+            body: JSON.stringify({message: `Missing required parameters event body: ${event.body}`}),
             headers: responseHeaders
         };
     }
 
     const userId = event.requestContext.authorizer.claims.sub;
     const subtaskParameters = JSON.parse(event.body);
-    const {Phase: phase, Status: status} = subtaskParameters;
+    const {
+        ProjectId: projectId,
+        Phase: phase,
+        TaskId: taskId,
+        SubtaskId: subtaskId,
+        Status: status
+    } = subtaskParameters;
+
     if (!phase || !status) {
         return {
             statusCode: 400,
@@ -41,9 +46,7 @@ export const editSubtaskHandler = async (event: APIGatewayEvent) => {
             headers: responseHeaders
         };
     }
-    const projectId = event.pathParameters.ProjectId;
-    const taskId = event.pathParameters.TaskId;
-    const subtaskId = event.pathParameters.SubtaskId;
+
 
     if (!taskId || !subtaskId) {
         return {
