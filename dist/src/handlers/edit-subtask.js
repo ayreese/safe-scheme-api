@@ -7,14 +7,10 @@ const headers_1 = require("../../utils/headers");
 const editSubtaskHandler = async (event) => {
     const tableName = process.env.PROJECTS_TABLE;
     if (!tableName) {
-        console.error("No table name provided");
-        return {
-            statusCode: 500,
-            body: JSON.stringify({ message: "No table name provided" }),
-            headers: headers_1.responseHeaders
-        };
+        console.warn(`Environment variable PROJECT_TABLE is missing, cannot query DynamoDB`);
+        throw new Error("Database error");
     }
-    if (!event.requestContext.authorizer || !event.requestContext.authorizer.claims.sub) {
+    if (!event.requestContext.authorizer) {
         console.error("missing authorizer event, unable to get user");
         console.log("Event received", event);
         return {

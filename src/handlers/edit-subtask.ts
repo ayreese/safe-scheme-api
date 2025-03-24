@@ -5,19 +5,15 @@ import {responseHeaders} from "../../utils/headers";
 
 export const editSubtaskHandler = async (event: APIGatewayEvent) => {
     const tableName = process.env.PROJECTS_TABLE;
-
     if (!tableName) {
-        console.error("No table name provided");
-        return {
-            statusCode: 500,
-            body: JSON.stringify({message: "No table name provided"}),
-            headers: responseHeaders
-        };
+        console.warn(`Environment variable PROJECT_TABLE is missing, cannot query DynamoDB`);
+        throw new Error("Database error");
     }
 
-    if (!event.requestContext.authorizer || !event.requestContext.authorizer.claims.sub) {
+    if (!event.requestContext.authorizer) {
         console.error("missing authorizer event, unable to get user");
         console.log("Event received", event);
+
         return {
             statusCode: 401,
             body: JSON.stringify({ message: "request missing user, token not read" }),
