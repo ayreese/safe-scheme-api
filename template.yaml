@@ -26,7 +26,7 @@ Resources:
       Description: API for Safe Scheme Application
       StageName: prod
       Cors:
-        AllowMethods: "'POST, GET, PUT, DELETE, OPTIONS'"
+        AllowMethods: "'POST, GET, PUT, DELETE'"
         AllowHeaders: "'Content-Type, X-Amz-Date, Authorization, X-Api-Key, X-Amz-Security-Token'"
         AllowOrigin: "*"
       TracingEnabled: true
