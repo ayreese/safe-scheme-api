@@ -25,6 +25,10 @@ Resources:
       Name: SafeSchemeAPI
       Description: API for Safe Scheme Application
       StageName: prod
+      Cors:
+        AllowMethods: "'POST, GET, PUT, DELETE, OPTIONS'"
+        AllowHeaders: "'Content-Type, X-Amz-Date, Authorization, X-Api-Key, X-Amz-Security-Token'"
+        AllowOrigin: "*"
       TracingEnabled: true
       GatewayResponses:
         DEFAULT_4XX:
@@ -194,7 +198,7 @@ Resources:
                   Required: true
                   Caching: false
 
-#Task CRUD operations
+  #Task CRUD operations
   createTaskFunction:
     Type: AWS::Serverless::Function
     Properties:
