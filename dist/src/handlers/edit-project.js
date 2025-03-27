@@ -13,7 +13,7 @@ const editProjectHandler = async (event) => {
             headers: headers_1.responseHeaders
         };
     }
-    if (!event.body || !event.requestContext.authorizer || !event.pathParameters || !event.pathParameters.ProjectId) {
+    if (!event.body || !event.requestContext.authorizer) {
         console.log("Function event:", event);
         return {
             statusCode: 400,
@@ -23,8 +23,7 @@ const editProjectHandler = async (event) => {
     }
     const projectParameters = JSON.parse(event.body);
     const userId = event.requestContext.authorizer.claims.sub;
-    const projectId = event.pathParameters.ProjectId;
-    const { Project: project } = projectParameters;
+    const { Project: project, ProjectId: projectId } = projectParameters;
     try {
         await dynamoClient_1.client.send(new lib_dynamodb_1.UpdateCommand({
             TableName: tableName,

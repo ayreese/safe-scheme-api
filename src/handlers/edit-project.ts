@@ -13,7 +13,7 @@ export const editProjectHandler = async (event: APIGatewayEvent) => {
         };
     }
 
-    if (!event.body || !event.requestContext.authorizer || !event.pathParameters || !event.pathParameters.ProjectId) {
+    if (!event.body || !event.requestContext.authorizer) {
         console.log("Function event:", event);
         return {
             statusCode: 400,
@@ -24,8 +24,7 @@ export const editProjectHandler = async (event: APIGatewayEvent) => {
 
     const projectParameters = JSON.parse(event.body);
     const userId = event.requestContext.authorizer.claims.sub;
-    const projectId = event.pathParameters.ProjectId;
-    const {Project: project} = projectParameters;
+    const {Project: project, ProjectId: projectId} = projectParameters;
 
     try {
         await client.send(new UpdateCommand({
