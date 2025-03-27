@@ -26,8 +26,8 @@ Resources:
       Description: API for Safe Scheme Application
       StageName: prod
       Cors:
-        AllowMethods: "'POST, GET, PUT, DELETE'"
-        AllowHeaders: "'Content-Type, X-Amz-Date, Authorization, X-Api-Key, X-Amz-Security-Token'"
+        AllowMethods: "'*'"
+        AllowHeaders: "'*'"
         AllowOrigin: "*"
       TracingEnabled: true
       GatewayResponses:
@@ -129,7 +129,7 @@ Resources:
           Properties:
             RestApiId: !Ref SafeSchemeAPI
             Path: /create-project
-            Method: POST
+            Method: ANY
             RequestModel:
               Model: Project
               Required: true
@@ -150,7 +150,7 @@ Resources:
           Properties:
             RestApiId: !Ref SafeSchemeAPI
             Path: /get-projects
-            Method: GET
+            Method: ANY
 
   editProjectFunction:
     Type: AWS::Serverless::Function
@@ -167,7 +167,7 @@ Resources:
           Properties:
             RestApiId: !Ref SafeSchemeAPI
             Path: /edit-project/{ProjectId}
-            Method: PUT
+            Method: ANY
             RequestParameters:
               - method.request.path.ProjectId:
                   Required: true
@@ -192,7 +192,7 @@ Resources:
           Properties:
             RestApiId: !Ref SafeSchemeAPI
             Path: /delete-project/{ProjectId}
-            Method: DELETE
+            Method: ANY
             RequestParameters:
               - method.request.path.ProjectId:
                   Required: true
@@ -214,7 +214,7 @@ Resources:
           Properties:
             RestApiId: !Ref SafeSchemeAPI
             Path: /create-task/{ProjectId}
-            Method: POST
+            Method: ANY
             RequestParameters:
               - method.request.path.ProjectId:
                   Required: true
@@ -243,7 +243,7 @@ Resources:
               - method.request.path.ProjectId.TaskId:
                   Required: true
                   Caching: false
-            Method: PUT
+            Method: ANY
             RequestModel:
               Model: Task
               Required: true
@@ -264,7 +264,7 @@ Resources:
           Properties:
             RestApiId: !Ref SafeSchemeAPI
             Path: /delete-task/{ProjectId}/{TaskId}
-            Method: DELETE
+            Method: ANY
             RequestParameters:
               - method.request.path.ProjectId.TaskId:
                   Required: true
@@ -286,7 +286,7 @@ Resources:
           Properties:
             RestApiId: !Ref SafeSchemeAPI
             Path: /create-subtask/{ProjectId}/{TaskId}
-            Method: POST
+            Method: ANY
             RequestParameters:
               - method.request.path.ProjectId.TaskId:
                   Required: true
@@ -311,7 +311,7 @@ Resources:
           Properties:
             RestApiId: !Ref SafeSchemeAPI
             Path: /edit-subtask
-            Method: PUT
+            Method: ANY
 
   deleteSubtaskFunction:
     Type: AWS::Serverless::Function
@@ -328,7 +328,7 @@ Resources:
           Properties:
             RestApiId: !Ref SafeSchemeAPI
             Path: /delete-subtask/{ProjectId}/{TaskId}/{SubtaskId}
-            Method: DELETE
+            Method: ANY
             RequestParameters:
               - method.request.path.ProjectId.TaskId.SubtaskId:
                   Required: true
