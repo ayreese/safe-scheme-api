@@ -45,7 +45,7 @@ const editSubtaskHandler = async (event) => {
         };
     }
     try {
-        await dynamoClient_1.client.send(new lib_dynamodb_1.UpdateCommand({
+        const response = await dynamoClient_1.client.send(new lib_dynamodb_1.UpdateCommand({
             TableName: tableName,
             Key: {
                 UserId: userId,
@@ -62,6 +62,7 @@ const editSubtaskHandler = async (event) => {
                 ":Status": status
             },
         }));
+        console.log("DynamoDB Response", response);
         return {
             statusCode: 200,
             body: JSON.stringify({ message: "Subtask updated successfully" }),

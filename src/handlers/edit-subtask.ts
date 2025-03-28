@@ -57,7 +57,7 @@ export const editSubtaskHandler = async (event: APIGatewayEvent) => {
     }
 
     try {
-        await client.send(new UpdateCommand({
+        const response = await client.send(new UpdateCommand({
             TableName: tableName,
             Key: {
                 UserId: userId,
@@ -75,6 +75,7 @@ export const editSubtaskHandler = async (event: APIGatewayEvent) => {
 
             },
         }));
+        console.log("DynamoDB Response", response);
 
         return {
             statusCode: 200,

@@ -26,7 +26,7 @@ Resources:
       Description: API for Safe Scheme Application
       StageName: prod
       Cors:
-        AllowMethods: "'OPTIONS,POST,GET,PUT,DELETE'"
+        AllowMethods: "'POST,GET,PUT,DELETE'"
         AllowHeaders: "'Content-Type, Authorization, X-Requested-With, Accept'"
         AllowOrigin: "*"
       TracingEnabled: true
@@ -130,12 +130,6 @@ Resources:
             RestApiId: !Ref SafeSchemeAPI
             Path: /create-project
             Method: POST
-        ApiOptions:
-          Type: Api
-          Properties:
-            RestApiId: !Ref SafeSchemeAPI
-            Path: /create-project
-            Method: OPTIONS
 
   getProjectsFunction:
     Type: AWS::Serverless::Function
@@ -153,12 +147,6 @@ Resources:
             RestApiId: !Ref SafeSchemeAPI
             Path: /get-projects
             Method: GET
-        ApiOptions:
-          Type: Api
-          Properties:
-            RestApiId: !Ref SafeSchemeAPI
-            Path: /get-projects
-            Method: OPTIONS
 
   editProjectFunction:
     Type: AWS::Serverless::Function
@@ -176,16 +164,8 @@ Resources:
             RestApiId: !Ref SafeSchemeAPI
             Path: /edit-project
             Method: PUT
-            RequestParameters:
-              - method.request.path.ProjectId:
-                  Required: true
-                  Caching: false
-        ApiOptions:
-          Type: Api
-          Properties:
-            RestApiId: !Ref SafeSchemeAPI
-            Path: /edit-project
-            Method: OPTIONS
+
+
 
   deleteProjectsFunction:
     Type: AWS::Serverless::Function
@@ -207,12 +187,7 @@ Resources:
               - method.request.path.ProjectId:
                   Required: true
                   Caching: false
-        ApiOptions:
-          Type: Api
-          Properties:
-            RestApiId: !Ref SafeSchemeAPI
-            Path: /delete-project/{ProjectId}
-            Method: OPTIONS
+
 
   #Task CRUD operations
   createTaskFunction:
@@ -235,12 +210,7 @@ Resources:
               - method.request.path.ProjectId:
                   Required: true
                   Caching: false
-        ApiOptions:
-          Type: Api
-          Properties:
-            RestApiId: !Ref SafeSchemeAPI
-            Path: /create-task/{ProjectId}
-            Method: OPTIONS
+
 
   editTaskFunction:
     Type: AWS::Serverless::Function
@@ -262,12 +232,7 @@ Resources:
                   Required: true
                   Caching: false
             Method: PUT
-        ApiOptions:
-          Type: Api
-          Properties:
-            RestApiId: !Ref SafeSchemeAPI
-            Path: /edit-task/{ProjectId}/{TaskId}
-            Method: OPTIONS
+
 
   deleteTaskFunction:
     Type: AWS::Serverless::Function
@@ -289,12 +254,6 @@ Resources:
               - method.request.path.ProjectId.TaskId:
                   Required: true
                   Caching: false
-        ApiOptions:
-          Type: Api
-          Properties:
-            RestApiId: !Ref SafeSchemeAPI
-            Path: /delete-task/{ProjectId}/{TaskId}
-            Method: OPTIONS
 
   #Subtasks CRUD operations
   createSubtaskFunction:
@@ -316,12 +275,6 @@ Resources:
             RequestParameters:
               - method.request.path.ProjectId.TaskId:
                   Required: true
-        ApiOptions:
-          Type: Api
-          Properties:
-            RestApiId: !Ref SafeSchemeAPI
-            Path: /create-subtask/{ProjectId}/{TaskId}
-            Method: OPTIONS
 
   editSubtaskFunction:
     Type: AWS::Serverless::Function
@@ -339,12 +292,6 @@ Resources:
             RestApiId: !Ref SafeSchemeAPI
             Path: /edit-subtask
             Method: PUT
-        ApiOptions:
-          Type: Api
-          Properties:
-            RestApiId: !Ref SafeSchemeAPI
-            Path: /edit-subtask
-            Method: OPTIONS
 
   deleteSubtaskFunction:
     Type: AWS::Serverless::Function
@@ -366,12 +313,6 @@ Resources:
               - method.request.path.ProjectId.TaskId.SubtaskId:
                   Required: true
                   Caching: false
-        ApiOptions:
-          Type: Api
-          Properties:
-            RestApiId: !Ref SafeSchemeAPI
-            Path: /delete-subtask/{ProjectId}/{TaskId}/{SubtaskId}
-            Method: OPTIONS
 
   demoProjectFunction:
     Type: AWS::Serverless::Function
