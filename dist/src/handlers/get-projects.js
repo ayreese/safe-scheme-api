@@ -32,7 +32,7 @@ const getProjectsHandler = async (event) => {
         const statusCode = data.$metadata.httpStatusCode;
         const items = data.Items;
         return {
-            statusCode: statusCode,
+            statusCode: statusCode || 400,
             body: JSON.stringify({ message: `Number of projects found ${items?.length}`, projects: items }),
             headers: headers_1.responseHeaders
         };

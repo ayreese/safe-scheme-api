@@ -1,9 +1,9 @@
 import { client } from "../../utils/dynamoClient";
 import {QueryCommand, QueryCommandOutput} from "@aws-sdk/lib-dynamodb";
-import { APIGatewayEvent } from "aws-lambda";
+import {APIGatewayEvent, APIGatewayProxyResult} from "aws-lambda";
 import {responseHeaders} from "../../utils/headers";
 
-export const getProjectsHandler = async (event: APIGatewayEvent) => {
+export const getProjectsHandler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     const table = process.env.PROJECTS_TABLE;
     if (!table) {
         console.warn(`Environment variable PROJECT_TABLE is missing, cannot query DynamoDB`);
@@ -34,7 +34,7 @@ export const getProjectsHandler = async (event: APIGatewayEvent) => {
         const items = data.Items
 
         return {
-            statusCode: statusCode,
+            statusCode: statusCode || 400,
             body: JSON.stringify({message: `Number of projects found ${items?.length}`, projects: items }),
             headers: responseHeaders
         };

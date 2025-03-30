@@ -40,79 +40,79 @@ Resources:
               Header: Authorization
               ReauthorizeEvery: 30
         DefaultAuthorizer: CognitoAuthorizer
-
-      Models:
-        Project:
-          type: object
-          required:
-            - Project
-          properties:
-            UserId:
-              type: string
-            Project:
-              type: string
-            ProjectId:
-              type: string
-            Status:
-              type: boolean
-            Tasks:
-              type: object
-              properties:
-                TaskId:
-                  type: string
-                Task:
-                  type: string
-                Status:
-                  type: boolean
-                Subtasks:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      SubtaskId:
-                        type: string
-                      Subtask:
-                        type: string
-                      Status:
-                        type: boolean
-        Task:
-          type: object
-          required:
-            - Task
-          properties:
-            TaskId:
-              type: string
-            Task:
-              type: string
-            Status:
-              type: boolean
-            Subtasks:
-              type: object
-              properties:
-                SubtaskId:
-                  type: string
-                Subtask:
-                  type: string
-                Status:
-                  type: boolean
-        Subtask:
-          type: object
-          required:
-            - Subtask
-          properties:
-            SubtaskId:
-              type: string
-            Subtask:
-              type: string
-            Status:
-              type: boolean
+#
+#      Models:
+#        Project:
+#          type: object
+#          required:
+#            - Project
+#          properties:
+#            UserId:
+#              type: string
+#            Project:
+#              type: string
+#            ProjectId:
+#              type: string
+#            Status:
+#              type: boolean
+#            Tasks:
+#              type: object
+#              properties:
+#                TaskId:
+#                  type: string
+#                Task:
+#                  type: string
+#                Status:
+#                  type: boolean
+#                Subtasks:
+#                  type: array
+#                  items:
+#                    type: object
+#                    properties:
+#                      SubtaskId:
+#                        type: string
+#                      Subtask:
+#                        type: string
+#                      Status:
+#                        type: boolean
+#        Task:
+#          type: object
+#          required:
+#            - Task
+#          properties:
+#            TaskId:
+#              type: string
+#            Task:
+#              type: string
+#            Status:
+#              type: boolean
+#            Subtasks:
+#              type: object
+#              properties:
+#                SubtaskId:
+#                  type: string
+#                Subtask:
+#                  type: string
+#                Status:
+#                  type: boolean
+#        Subtask:
+#          type: object
+#          required:
+#            - Subtask
+#          properties:
+#            SubtaskId:
+#              type: string
+#            Subtask:
+#              type: string
+#            Status:
+#              type: boolean
 
   #Project CRUD operations
-  createProjectFunction:
+  facilitatorFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: dist/src/handlers/create-project.createProjectHandler
-      Description: Create project
+      Handler: dist/src/handlers/facilitator.facilitatorHandler
+      Description: Lambda function to facilitate request
       Tracing: Active
       Policies:
         - DynamoDBCrudPolicy:
@@ -122,184 +122,201 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref SafeSchemeAPI
-            Path: /create-project
-            Method: POST
-
-  getProjectsFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler: dist/src/handlers/get-projects.getProjectsHandler
-      Description: Get user projects function
-      Tracing: Active
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref ProjectsTable
-      Events:
-        Api:
-          Type: Api
-          Properties:
-            RestApiId: !Ref SafeSchemeAPI
-            Path: /get-projects
-            Method: GET
-
-  editProjectFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler: dist/src/handlers/edit-project.editProjectHandler
-      Description: Edit project function
-      Tracing: Active
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref ProjectsTable
-      Events:
-        Api:
-          Type: Api
-          Properties:
-            RestApiId: !Ref SafeSchemeAPI
-            Path: /edit-project
-            Method: PUT
-
-  deleteProjectsFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler: dist/src/handlers/delete-project.deleteProjectHandler
-      Description: Delete project function
-      Tracing: Active
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref ProjectsTable
-      Events:
-        Api:
-          Type: Api
-          Properties:
-            RestApiId: !Ref SafeSchemeAPI
-            Path: /delete-project/{ProjectId}
-            Method: DELETE
-            RequestParameters:
-              - method.request.path.ProjectId:
-                  Required: true
-                  Caching: false
-
-  createTaskFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler: dist/src/handlers/create-task.createTaskHandler
-      Tracing: Active
-      Description: Create task for a project
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref ProjectsTable
-      Events:
-        Api:
-          Type: Api
-          Properties:
-            RestApiId: !Ref SafeSchemeAPI
-            Path: /create-task/{ProjectId}
-            Method: POST
-            RequestParameters:
-              - method.request.path.ProjectId:
-                  Required: true
-                  Caching: false
-
-  editTaskFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler: dist/src/handlers/edit-task.editTaskHandler
-      Tracing: Active
-      Description: Edit task function
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref ProjectsTable
-      Events:
-        Api:
-          Type: Api
-          Properties:
-            RestApiId: !Ref SafeSchemeAPI
-            Path: /edit-task/{ProjectId}/{TaskId}
-            RequestParameters:
-              - method.request.path.ProjectId.TaskId:
-                  Required: true
-                  Caching: false
-            Method: PUT
-
-  deleteTaskFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler: dist/src/handlers/delete-task.deleteTaskHandler
-      Tracing: Active
-      Description: Delete task function
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref ProjectsTable
-      Events:
-        Api:
-          Type: Api
-          Properties:
-            RestApiId: !Ref SafeSchemeAPI
-            Path: /delete-task/{ProjectId}/{TaskId}
-            Method: DELETE
-            RequestParameters:
-              - method.request.path.ProjectId.TaskId:
-                  Required: true
-                  Caching: false
-
-  createSubtaskFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler: dist/src/handlers/create-subtask.createSubtaskHandler
-      Tracing: Active
-      Description: Create subtask for a task
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref ProjectsTable
-      Events:
-        Api:
-          Type: Api
-          Properties:
-            RestApiId: !Ref SafeSchemeAPI
-            Path: /create-subtask/{ProjectId}/{TaskId}
-            Method: POST
-            RequestParameters:
-              - method.request.path.ProjectId.TaskId:
-                  Required: true
-
-  editSubtaskFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler: dist/src/handlers/edit-subtask.editSubtaskHandler
-      Tracing: Active
-      Description: Edit subtask function
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref ProjectsTable
-      Events:
-        Api:
-          Type: Api
-          Properties:
-            RestApiId: !Ref SafeSchemeAPI
-            Path: /edit-subtask
-            Method: POST
-
-  deleteSubtaskFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler: dist/src/handlers/delete-subtask.deleteSubtaskHandler
-      Description: Delete subtask function
-      Tracing: Active
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref ProjectsTable
-      Events:
-        Api:
-          Type: Api
-          Properties:
-            RestApiId: !Ref SafeSchemeAPI
-            Path: /delete-subtask/{ProjectId}/{TaskId}/{SubtaskId}
-            Method: DELETE
-            RequestParameters:
-              - method.request.path.ProjectId.TaskId.SubtaskId:
-                  Required: true
-                  Caching: false
+            Path: /facilitate
+            Method: ANY
+#
+#  createProjectFunction:
+#    Type: AWS::Serverless::Function
+#    Properties:
+#      Handler: dist/src/handlers/create-project.createProjectHandler
+#      Description: Create project
+#      Tracing: Active
+#      Policies:
+#        - DynamoDBCrudPolicy:
+#            TableName: !Ref ProjectsTable
+#      Events:
+#        Api:
+#          Type: Api
+#          Properties:
+#            RestApiId: !Ref SafeSchemeAPI
+#            Path: /create-project
+#            Method: POST
+#
+#  getProjectsFunction:
+#    Type: AWS::Serverless::Function
+#    Properties:
+#      Handler: dist/src/handlers/get-projects.getProjectsHandler
+#      Description: Get user projects function
+#      Tracing: Active
+#      Policies:
+#        - DynamoDBCrudPolicy:
+#            TableName: !Ref ProjectsTable
+#      Events:
+#        Api:
+#          Type: Api
+#          Properties:
+#            RestApiId: !Ref SafeSchemeAPI
+#            Path: /get-projects
+#            Method: GET
+#
+#  editProjectFunction:
+#    Type: AWS::Serverless::Function
+#    Properties:
+#      Handler: dist/src/handlers/edit-project.editProjectHandler
+#      Description: Edit project function
+#      Tracing: Active
+#      Policies:
+#        - DynamoDBCrudPolicy:
+#            TableName: !Ref ProjectsTable
+#      Events:
+#        Api:
+#          Type: Api
+#          Properties:
+#            RestApiId: !Ref SafeSchemeAPI
+#            Path: /edit-project
+#            Method: PUT
+#
+#  deleteProjectsFunction:
+#    Type: AWS::Serverless::Function
+#    Properties:
+#      Handler: dist/src/handlers/delete-project.deleteProjectHandler
+#      Description: Delete project function
+#      Tracing: Active
+#      Policies:
+#        - DynamoDBCrudPolicy:
+#            TableName: !Ref ProjectsTable
+#      Events:
+#        Api:
+#          Type: Api
+#          Properties:
+#            RestApiId: !Ref SafeSchemeAPI
+#            Path: /delete-project/{ProjectId}
+#            Method: DELETE
+#            RequestParameters:
+#              - method.request.path.ProjectId:
+#                  Required: true
+#                  Caching: false
+#
+#  createTaskFunction:
+#    Type: AWS::Serverless::Function
+#    Properties:
+#      Handler: dist/src/handlers/create-task.createTaskHandler
+#      Tracing: Active
+#      Description: Create task for a project
+#      Policies:
+#        - DynamoDBCrudPolicy:
+#            TableName: !Ref ProjectsTable
+#      Events:
+#        Api:
+#          Type: Api
+#          Properties:
+#            RestApiId: !Ref SafeSchemeAPI
+#            Path: /create-task/{ProjectId}
+#            Method: POST
+#            RequestParameters:
+#              - method.request.path.ProjectId:
+#                  Required: true
+#                  Caching: false
+#
+#  editTaskFunction:
+#    Type: AWS::Serverless::Function
+#    Properties:
+#      Handler: dist/src/handlers/edit-task.editTaskHandler
+#      Tracing: Active
+#      Description: Edit task function
+#      Policies:
+#        - DynamoDBCrudPolicy:
+#            TableName: !Ref ProjectsTable
+#      Events:
+#        Api:
+#          Type: Api
+#          Properties:
+#            RestApiId: !Ref SafeSchemeAPI
+#            Path: /edit-task/{ProjectId}/{TaskId}
+#            RequestParameters:
+#              - method.request.path.ProjectId.TaskId:
+#                  Required: true
+#                  Caching: false
+#            Method: PUT
+#
+#  deleteTaskFunction:
+#    Type: AWS::Serverless::Function
+#    Properties:
+#      Handler: dist/src/handlers/delete-task.deleteTaskHandler
+#      Tracing: Active
+#      Description: Delete task function
+#      Policies:
+#        - DynamoDBCrudPolicy:
+#            TableName: !Ref ProjectsTable
+#      Events:
+#        Api:
+#          Type: Api
+#          Properties:
+#            RestApiId: !Ref SafeSchemeAPI
+#            Path: /delete-task/{ProjectId}/{TaskId}
+#            Method: DELETE
+#            RequestParameters:
+#              - method.request.path.ProjectId.TaskId:
+#                  Required: true
+#                  Caching: false
+#
+#  createSubtaskFunction:
+#    Type: AWS::Serverless::Function
+#    Properties:
+#      Handler: dist/src/handlers/create-subtask.createSubtaskHandler
+#      Tracing: Active
+#      Description: Create subtask for a task
+#      Policies:
+#        - DynamoDBCrudPolicy:
+#            TableName: !Ref ProjectsTable
+#      Events:
+#        Api:
+#          Type: Api
+#          Properties:
+#            RestApiId: !Ref SafeSchemeAPI
+#            Path: /create-subtask/{ProjectId}/{TaskId}
+#            Method: POST
+#            RequestParameters:
+#              - method.request.path.ProjectId.TaskId:
+#                  Required: true
+#
+#  editSubtaskFunction:
+#    Type: AWS::Serverless::Function
+#    Properties:
+#      Handler: dist/src/handlers/edit-subtask.editSubtaskHandler
+#      Tracing: Active
+#      Description: Edit subtask function
+#      Policies:
+#        - DynamoDBCrudPolicy:
+#            TableName: !Ref ProjectsTable
+#      Events:
+#        Api:
+#          Type: Api
+#          Properties:
+#            RestApiId: !Ref SafeSchemeAPI
+#            Path: /edit-subtask
+#            Method: POST
+#
+#  deleteSubtaskFunction:
+#    Type: AWS::Serverless::Function
+#    Properties:
+#      Handler: dist/src/handlers/delete-subtask.deleteSubtaskHandler
+#      Description: Delete subtask function
+#      Tracing: Active
+#      Policies:
+#        - DynamoDBCrudPolicy:
+#            TableName: !Ref ProjectsTable
+#      Events:
+#        Api:
+#          Type: Api
+#          Properties:
+#            RestApiId: !Ref SafeSchemeAPI
+#            Path: /delete-subtask/{ProjectId}/{TaskId}/{SubtaskId}
+#            Method: DELETE
+#            RequestParameters:
+#              - method.request.path.ProjectId.TaskId.SubtaskId:
+#                  Required: true
+#                  Caching: false
 
   demoProjectFunction:
     Type: AWS::Serverless::Function

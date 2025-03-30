@@ -38,7 +38,7 @@ export const createProjectHandler = async (event: APIGatewayEvent): Promise<APIG
 
     try {
         const projectId = crypto.randomUUID();
-        await client.send(new PutCommand({
+        const data = await client.send(new PutCommand({
             TableName: tableName,
             Item: {
                 UserId: userId,
@@ -48,9 +48,9 @@ export const createProjectHandler = async (event: APIGatewayEvent): Promise<APIG
                 Tasks: {},
             }
         }));
-
+        const statusCode = data.$metadata.httpStatusCode
         return {
-            statusCode: 200,
+            statusCode: statusCode || 200,
             body: JSON.stringify({message: "Created project", ProjectId: projectId}),
             headers: responseHeaders
         };
