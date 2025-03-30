@@ -29,13 +29,6 @@ export const facilitatorHandler = async (event: APIGatewayEvent): Promise<APIGat
         };
     }
 
-    if (!event.body) {
-        return {
-            statusCode: 400,
-            body: JSON.stringify({message: "Request body required"}),
-            headers: responseHeaders
-        };
-    }
 
     const defaultRequest = {
         statusCode: 400,

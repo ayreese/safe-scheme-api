@@ -27,13 +27,6 @@ const facilitatorHandler = async (event) => {
             headers: headers_1.responseHeaders
         };
     }
-    if (!event.body) {
-        return {
-            statusCode: 400,
-            body: JSON.stringify({ message: "Request body required" }),
-            headers: headers_1.responseHeaders
-        };
-    }
     const defaultRequest = {
         statusCode: 400,
         body: JSON.stringify({ message: "Invalid request" }),
