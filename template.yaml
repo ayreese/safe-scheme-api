@@ -25,14 +25,8 @@ Resources:
       Name: SafeSchemeAPI
       Description: API for Safe Scheme Application
       StageName: prod
-      Cors:
-        AllowMethods: "'POST,GET,PUT,DELETE'"
-        AllowHeaders: "'Content-Type, Authorization, X-Requested-With, Accept'"
-        AllowOrigin: "*"
       TracingEnabled: true
       GatewayResponses:
-        DEFAULT_4XX:
-          StatusCode: 404
         UNAUTHORIZED:
           StatusCode: 401
           ResponseTemplates:

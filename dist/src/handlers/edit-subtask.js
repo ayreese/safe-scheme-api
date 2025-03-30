@@ -19,28 +19,55 @@ const editSubtaskHandler = async (event) => {
             headers: headers_1.responseHeaders
         };
     }
+    const userId = event.requestContext.authorizer.claims.sub;
+    if (!userId) {
+        console.error("Unable to get user");
+        console.log("Event received", event);
+        return {
+            statusCode: 401,
+            body: JSON.stringify({ message: "request missing user, token not read" }),
+            headers: headers_1.responseHeaders
+        };
+    }
     if (!event.body) {
         console.log("Event body:", event.body);
         return {
             statusCode: 400,
-            body: JSON.stringify({ message: `Missing required parameters event body: ${event.body}` }),
+            body: JSON.stringify({ message: `Missing body: ${event.body}` }),
             headers: headers_1.responseHeaders
         };
     }
-    const userId = event.requestContext.authorizer.claims.sub;
     const subtaskParameters = JSON.parse(event.body);
     const { ProjectId: projectId, Phase: phase, TaskId: taskId, SubtaskId: subtaskId, Status: status } = subtaskParameters;
-    if (!phase || !status) {
+    if (!phase) {
+        console.error("Event received", event.body);
         return {
             statusCode: 400,
-            body: JSON.stringify({ message: "Missing Phase or Status in subtask parameters" }),
+            body: JSON.stringify({ message: "Missing Phase parameters" }),
             headers: headers_1.responseHeaders
         };
     }
-    if (!taskId || !subtaskId) {
+    if (typeof status !== "boolean") {
+        console.error("Event received", event.body);
         return {
             statusCode: 400,
-            body: JSON.stringify({ message: "TaskId and SubtaskId must be provided" }),
+            body: JSON.stringify({ message: "Missing Status parameters" }),
+            headers: headers_1.responseHeaders
+        };
+    }
+    if (!taskId) {
+        console.error("Event received", event.body);
+        return {
+            statusCode: 400,
+            body: JSON.stringify({ message: "TaskId must be provided" }),
+            headers: headers_1.responseHeaders
+        };
+    }
+    if (!subtaskId) {
+        console.error("Event received", event.body);
+        return {
+            statusCode: 400,
+            body: JSON.stringify({ message: "SubtaskId must be provided" }),
             headers: headers_1.responseHeaders
         };
     }
