@@ -159,8 +159,6 @@ Resources:
             Path: /edit-project
             Method: PUT
 
-
-
   deleteProjectsFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -182,8 +180,6 @@ Resources:
                   Required: true
                   Caching: false
 
-
-  #Task CRUD operations
   createTaskFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -204,7 +200,6 @@ Resources:
               - method.request.path.ProjectId:
                   Required: true
                   Caching: false
-
 
   editTaskFunction:
     Type: AWS::Serverless::Function
@@ -227,7 +222,6 @@ Resources:
                   Caching: false
             Method: PUT
 
-
   deleteTaskFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -249,7 +243,6 @@ Resources:
                   Required: true
                   Caching: false
 
-  #Subtasks CRUD operations
   createSubtaskFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -285,7 +278,7 @@ Resources:
           Properties:
             RestApiId: !Ref SafeSchemeAPI
             Path: /edit-subtask
-            Method: PUT
+            Method: POST
 
   deleteSubtaskFunction:
     Type: AWS::Serverless::Function
