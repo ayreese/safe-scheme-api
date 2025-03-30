@@ -21,6 +21,14 @@ export const facilitatorHandler = async (event: APIGatewayEvent): Promise<APIGat
         };
     }
 
+    if (!event.pathParameters) {
+        return {
+            statusCode: 400,
+            body: JSON.stringify({message: "Request type required"}),
+            headers: responseHeaders
+        };
+    }
+
     if (!event.body) {
         return {
             statusCode: 400,
@@ -35,14 +43,14 @@ export const facilitatorHandler = async (event: APIGatewayEvent): Promise<APIGat
         headers: responseHeaders,
     };
 
-    const request = JSON.parse(event.body);
+    // const request = JSON.parse(event.body);
 
-    const {requestType} = request
+    const requestType = event.pathParameters.requestType;
 
     switch (event.httpMethod) {
         case "GET":
             switch (requestType) {
-                case "projects":
+                case "userProjects":
                     return await getProjectsHandler(event)
                 default:
                     return defaultRequest
