@@ -55,7 +55,6 @@ export const editTaskHandler = async (event: APIGatewayEvent) => {
         TaskId: taskId,
         Name: name,
         Description: description,
-        Status: status,
         SubtasksToUpdate: subtasksToUpdate,
         Subtasks: subtasks
 
@@ -89,18 +88,16 @@ export const editTaskHandler = async (event: APIGatewayEvent) => {
                 UserId: userId,
                 ProjectId: projectId,
             },
-            UpdateExpression: 'SET Phases.#Phase.#TaskId.#Name = :Name, Phases.#Phase.#TaskId.#Description = :Description, Phases.#Phase.#TaskId.#Status = :Status, Phases.#Phase.#TaskId.subtasks = :Subtasks',
+            UpdateExpression: 'SET Phases.#Phase.#TaskId.#Name = :Name, Phases.#Phase.#TaskId.#Description = :Description, Phases.#Phase.#TaskId.subtasks = :Subtasks',
             ExpressionAttributeNames: {
                 "#Phase": phase,
                 "#TaskId": taskId,
                 "#Name": "name",
                 "#Description": "description",
-                "#Status": "status",
             },
             ExpressionAttributeValues: {
                 ":Name": name,
                 ":Description": description,
-                ":Status": status,
                 ":Subtasks": subtasksToUpdate,
             },
         }));

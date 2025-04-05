@@ -33,7 +33,7 @@ const editTaskHandler = async (event) => {
         };
     }
     const taskParameters = JSON.parse(event.body);
-    const { ProjectId: projectId, Phase: phase, TaskId: taskId, Name: name, Description: description, Status: status, SubtasksToUpdate: subtasksToUpdate, Subtasks: subtasks } = taskParameters;
+    const { ProjectId: projectId, Phase: phase, TaskId: taskId, Name: name, Description: description, SubtasksToUpdate: subtasksToUpdate, Subtasks: subtasks } = taskParameters;
     if (!taskId) {
         console.log("taskId missing");
         return {
@@ -55,18 +55,16 @@ const editTaskHandler = async (event) => {
                 UserId: userId,
                 ProjectId: projectId,
             },
-            UpdateExpression: 'SET Phases.#Phase.#TaskId.#Name = :Name, Phases.#Phase.#TaskId.#Description = :Description, Phases.#Phase.#TaskId.#Status = :Status, Phases.#Phase.#TaskId.subtasks = :Subtasks',
+            UpdateExpression: 'SET Phases.#Phase.#TaskId.#Name = :Name, Phases.#Phase.#TaskId.#Description = :Description, Phases.#Phase.#TaskId.subtasks = :Subtasks',
             ExpressionAttributeNames: {
                 "#Phase": phase,
                 "#TaskId": taskId,
                 "#Name": "name",
                 "#Description": "description",
-                "#Status": "status",
             },
             ExpressionAttributeValues: {
                 ":Name": name,
                 ":Description": description,
-                ":Status": status,
                 ":Subtasks": subtasksToUpdate,
             },
         }));
