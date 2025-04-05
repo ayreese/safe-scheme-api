@@ -6,6 +6,12 @@ import {responseHeaders} from "../../utils/headers";
 const {createPhases} = require("../../utils/functions");
 
 export const createProjectHandler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
+    const tableName = process.env.PROJECTS_TABLE;
+
+    if (!tableName) {
+        throw new Error("PROJECTS_TABLE environment variable is not set.");
+    }
+
     if (!event.body || !event.requestContext.authorizer) {
         return {
             statusCode: 400,
@@ -14,14 +20,7 @@ export const createProjectHandler = async (event: APIGatewayEvent): Promise<APIG
         };
     }
 
-
-
     const project = JSON.parse(event.body);
-    const tableName = process.env.PROJECTS_TABLE;
-
-    if (!tableName) {
-        throw new Error("PROJECTS_TABLE environment variable is not set.");
-    }
 
     const {Name: name, Phases: phasesArray} = project;
     const userId = event.requestContext.authorizer.claims.sub;
@@ -45,7 +44,7 @@ export const createProjectHandler = async (event: APIGatewayEvent): Promise<APIG
                 ProjectId: projectId,
                 Project: name,
                 Phases: createPhases(phasesArray),
-                Tasks: {},
+                Status: false
             }
         }));
         const statusCode = data.$metadata.httpStatusCode

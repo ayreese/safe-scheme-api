@@ -1,0 +1,18 @@
+{
+  "body": "{\"ProjectId\": \"68720381-aa44-401f-b482-f11fa37aee07\", \"PrevPhase\": \"Todo\", \"NextPhase\": \"Complete\", \"TaskId\": \"0080e27e-ea62-4993-b012-b73226d0f562\"}",
+  "requestContext": {
+    "authorizer": {
+      "claims": {
+        "sub": "test-user-123"
+      }
+    }
+  },
+  "pathParameters": {
+    "requestType": "updateTask"
+  },
+  "resource": "/facilitator/{requestType}/",
+  "httpMethod": "PUT",
+  "headers": {
+    "Content-Type": "application/json"
+  }
+}

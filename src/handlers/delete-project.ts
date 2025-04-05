@@ -5,24 +5,35 @@ import {responseHeaders} from "../../utils/headers";
 
 export const deleteProjectHandler = async (event: APIGatewayEvent) => {
     const tableName = process.env.PROJECTS_TABLE;
+
     if (!tableName) {
         throw new Error("No table name provided");
     }
 
-    if (!event.pathParameters || !event.pathParameters.ProjectId || !event.pathParameters.UserId) {
-        console.info("Missing path parameters:", event.pathParameters);
+    if (!event.requestContext.authorizer) {
+        console.info("Unauthorized user: missing or invalid token");
         return {
             statusCode: 400,
             body: JSON.stringify({
-                message: "UserId and ProjectId must be provided.",
+                message: "Unauthorized user",
             }),
             headers: responseHeaders
         };
     }
 
-    const userId = event.pathParameters.UserId;
-    const projectId = event.pathParameters.ProjectId;
-
+    const userId = event.requestContext.authorizer.claims.sub;
+    if (!event.body) {
+        console.info("Unauthorized user: missing or invalid token");
+        return {
+            statusCode: 400,
+            body: JSON.stringify({
+                message: "Unauthorized user",
+            }),
+            headers: responseHeaders
+        };
+    }
+    const projectToDelete = JSON.parse(event.body);
+    const { ProjectId: projectId } = projectToDelete
     try {
         await client.send(new DeleteCommand({
             TableName: tableName,

@@ -1,5 +1,5 @@
 {
-  "body": "{\"Name\": \"Test project event\", \"Phases\": [ \"Todo\",  \"In Progress\",  \"Complete\"]}",
+  "body": "{\"ProjectId\": \"8991dcef-97ec-4011-b2bf-dcb58768feab\", \"Project\": \"Master Safe Scheme\"}",
   "requestContext": {
     "authorizer": {
       "claims": {
@@ -11,7 +11,7 @@
     "requestType": "project"
   },
   "resource": "/facilitator/{requestType}",
-  "httpMethod": "POST",
+  "httpMethod": "PUT",
   "headers": {
     "Content-Type": "application/json"
   }

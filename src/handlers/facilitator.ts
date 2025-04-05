@@ -10,6 +10,7 @@ import {editSubtaskHandler} from "./edit-subtask";
 import {deleteProjectHandler} from "./delete-project";
 import {deleteTaskHandler} from "./delete-task";
 import {deleteSubtaskHandler} from "./delete-subtask";
+import {updateTaskHandler} from "./update-task";
 
 
 export const facilitatorHandler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
@@ -68,6 +69,8 @@ export const facilitatorHandler = async (event: APIGatewayEvent): Promise<APIGat
                     return await editTaskHandler(event);
                 case "subtask":
                     return await editSubtaskHandler(event);
+                case "updateTask":
+                    return await updateTaskHandler(event);
                 default:
                     return defaultRequest
             }

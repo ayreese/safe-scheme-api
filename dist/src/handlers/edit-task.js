@@ -5,6 +5,9 @@ const dynamoClient_1 = require("../../utils/dynamoClient");
 const lib_dynamodb_1 = require("@aws-sdk/lib-dynamodb");
 const headers_1 = require("../../utils/headers");
 const editTaskHandler = async (event) => {
+    // interface SubtaskInterface {
+    //     Record<string: Subtask>
+    // }
     const tableName = process.env.PROJECTS_TABLE;
     if (!tableName) {
         console.warn(`No table name provided`);
@@ -14,18 +17,23 @@ const editTaskHandler = async (event) => {
             headers: headers_1.responseHeaders
         };
     }
-    if (!event.body || !event.pathParameters || !event.requestContext.authorizer) {
+    if (!event.requestContext.authorizer) {
         return {
             statusCode: 400,
-            body: JSON.stringify({ message: "Missing required parameters (body, user, taskId)" }),
+            body: JSON.stringify({ message: "Unauthorized" }),
+            headers: headers_1.responseHeaders
+        };
+    }
+    const userId = event.requestContext.authorizer.claims.sub;
+    if (!event.body) {
+        return {
+            statusCode: 400,
+            body: JSON.stringify({ message: "Request body not provided" }),
             headers: headers_1.responseHeaders
         };
     }
     const taskParameters = JSON.parse(event.body);
-    const { Description: description, Status: status } = taskParameters;
-    const projectId = event.pathParameters.ProjectId;
-    const taskId = event.pathParameters.TaskId;
-    const userId = event.requestContext.authorizer.claims.sub;
+    const { ProjectId: projectId, Phase: phase, TaskId: taskId, Name: name, Description: description, Status: status, SubtasksToUpdate: subtasksToUpdate, Subtasks: subtasks } = taskParameters;
     if (!taskId) {
         console.log("taskId missing");
         return {
@@ -34,21 +42,32 @@ const editTaskHandler = async (event) => {
             headers: headers_1.responseHeaders
         };
     }
+    const updateObject = (withId, without) => {
+        without.forEach(subtask => {
+            withId[crypto.randomUUID()] = subtask;
+        });
+    };
+    updateObject(subtasksToUpdate, subtasks);
     try {
-        console.log("Task ID is of type", typeof taskId);
         await dynamoClient_1.client.send(new lib_dynamodb_1.UpdateCommand({
             TableName: tableName,
             Key: {
                 UserId: userId,
                 ProjectId: projectId,
             },
-            UpdateExpression: 'SET Tasks.#TaskId.Description = :Description, Tasks.#TaskId.Status = :Status',
+            UpdateExpression: 'SET Phases.#Phase.#TaskId.#Name = :Name, Phases.#Phase.#TaskId.#Description = :Description, Phases.#Phase.#TaskId.#Status = :Status, Phases.#Phase.#TaskId.subtasks = :Subtasks',
             ExpressionAttributeNames: {
+                "#Phase": phase,
                 "#TaskId": taskId,
+                "#Name": "name",
+                "#Description": "description",
+                "#Status": "status",
             },
             ExpressionAttributeValues: {
+                ":Name": name,
                 ":Description": description,
                 ":Status": status,
+                ":Subtasks": subtasksToUpdate,
             },
         }));
         return {

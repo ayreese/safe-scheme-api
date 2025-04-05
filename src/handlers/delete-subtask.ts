@@ -10,18 +10,26 @@ export const deleteSubtaskHandler = async (event: APIGatewayEvent) => {
         throw new Error("No tableName provided");
     }
 
-    if (!event.requestContext.authorizer || !event.pathParameters) {
+    if (!event.requestContext.authorizer) {
         return {
             statusCode: 400,
-            body: JSON.stringify({ message: "User and parameters must be provided" }),
+            body: JSON.stringify({ message: "Unauthorized" }),
+            headers: responseHeaders
+        };
+    }
+
+    if (!event.body) {
+        return {
+            statusCode: 400,
+            body: JSON.stringify({ message: "Subtasks parameters must be provided" }),
             headers: responseHeaders
         };
     }
 
     const userId = event.requestContext.authorizer.claims.sub;
-    const projectId = event.pathParameters.ProjectId;
-    const taskId = event.pathParameters.TaskId;
-    const subtaskId = event.pathParameters.SubtaskId;
+    const subtaskParameters = JSON.parse(event.body)
+    const {ProjectId: projectId, Phase: phase, TaskId: taskId, SubtaskId: subtaskId} = subtaskParameters
+
 
     if (!userId || !projectId || !taskId || !subtaskId) {
         console.log("Missing parameters:", { userId, projectId, taskId, subtaskId });
@@ -39,11 +47,13 @@ export const deleteSubtaskHandler = async (event: APIGatewayEvent) => {
                 UserId: userId,
                 ProjectId: projectId,
             },
-            ConditionExpression: "attribute_exists(Tasks.#TaskId.Subtasks.#SubtaskId)",
-            UpdateExpression: 'REMOVE Tasks.#TaskId.Subtasks.#SubtaskId',
+            ConditionExpression: "attribute_exists(Phases.#Phase.#TaskId.subtasks.#SubtaskId)",
+            UpdateExpression: 'REMOVE Phases.#Phase.#TaskId.subtasks.#SubtaskId',
             ExpressionAttributeNames: {
+                "#Phase": phase,
                 "#TaskId": taskId,
                 "#SubtaskId": subtaskId,
+
             },
         }));
 

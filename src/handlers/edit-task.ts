@@ -4,6 +4,21 @@ import {APIGatewayEvent} from "aws-lambda";
 import {responseHeaders} from "../../utils/headers";
 
 export const editTaskHandler = async (event: APIGatewayEvent) => {
+    interface Subtask {
+       name: string;
+       status: boolean
+    }
+
+    interface SubtaskWithId {
+        [subtaskId: string]: Subtask;
+    }
+
+
+
+    // interface SubtaskInterface {
+    //     Record<string: Subtask>
+    // }
+
     const tableName = process.env.PROJECTS_TABLE;
 
     if (!tableName) {
@@ -15,19 +30,37 @@ export const editTaskHandler = async (event: APIGatewayEvent) => {
         };
     }
 
-    if (!event.body || !event.pathParameters || !event.requestContext.authorizer) {
+    if (!event.requestContext.authorizer) {
         return {
             statusCode: 400,
-            body: JSON.stringify({message: "Missing required parameters (body, user, taskId)"}),
+            body: JSON.stringify({message: "Unauthorized"}),
+            headers: responseHeaders
+        };
+    }
+
+    const userId = event.requestContext.authorizer.claims.sub;
+
+    if (!event.body) {
+        return {
+            statusCode: 400,
+            body: JSON.stringify({message: "Request body not provided"}),
             headers: responseHeaders
         };
     }
 
     const taskParameters = JSON.parse(event.body);
-    const {Description: description, Status: status} = taskParameters;
-    const projectId = event.pathParameters.ProjectId;
-    const taskId = event.pathParameters.TaskId;
-    const userId = event.requestContext.authorizer.claims.sub;
+    const {
+        ProjectId: projectId,
+        Phase: phase,
+        TaskId: taskId,
+        Name: name,
+        Description: description,
+        Status: status,
+        SubtasksToUpdate: subtasksToUpdate,
+        Subtasks: subtasks
+
+    } = taskParameters;
+
 
     if (!taskId) {
         console.log("taskId missing");
@@ -38,22 +71,37 @@ export const editTaskHandler = async (event: APIGatewayEvent) => {
         };
     }
 
-    try {
-        console.log("Task ID is of type", typeof taskId);
+    const updateObject = (withId: SubtaskWithId, without: Subtask[]) => {
+        without.forEach(subtask => {
+           withId[crypto.randomUUID()] = subtask
 
+        })
+
+    }
+
+    updateObject(subtasksToUpdate, subtasks)
+
+
+    try {
         await client.send(new UpdateCommand({
             TableName: tableName,
             Key: {
                 UserId: userId,
                 ProjectId: projectId,
             },
-            UpdateExpression: 'SET Tasks.#TaskId.Description = :Description, Tasks.#TaskId.Status = :Status',
+            UpdateExpression: 'SET Phases.#Phase.#TaskId.#Name = :Name, Phases.#Phase.#TaskId.#Description = :Description, Phases.#Phase.#TaskId.#Status = :Status, Phases.#Phase.#TaskId.subtasks = :Subtasks',
             ExpressionAttributeNames: {
+                "#Phase": phase,
                 "#TaskId": taskId,
+                "#Name": "name",
+                "#Description": "description",
+                "#Status": "status",
             },
             ExpressionAttributeValues: {
+                ":Name": name,
                 ":Description": description,
                 ":Status": status,
+                ":Subtasks": subtasksToUpdate,
             },
         }));
 

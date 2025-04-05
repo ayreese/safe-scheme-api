@@ -13,8 +13,17 @@ export const deleteTaskHandler = async (event: APIGatewayEvent) => {
             headers: responseHeaders
         };
     }
+    if (!event.requestContext.authorizer) {
+        console.log("parameters:", event.pathParameters);
+        return {
+            statusCode: 400,
+            body: JSON.stringify({ message: "Invalid permissions or token" }),
+            headers: responseHeaders
+        };
+    }
+    const userId = event.requestContext.authorizer.claims.sub;
 
-    if (!event.pathParameters || !event.pathParameters.UserId || !event.pathParameters.ProjectId || !event.pathParameters.TaskId) {
+    if ( !event.body) {
         console.log("parameters:", event.pathParameters);
         return {
             statusCode: 400,
@@ -22,10 +31,9 @@ export const deleteTaskHandler = async (event: APIGatewayEvent) => {
             headers: responseHeaders
         };
     }
+    const taskToDelete = JSON.parse(event.body);
+    const {ProjectId: projectId, Phase: phase, TaskId: taskId} = taskToDelete;
 
-    const userId = event.pathParameters.UserId;
-    const projectId = event.pathParameters.ProjectId;
-    const taskId = event.pathParameters.TaskId;
 
     if (!taskId) {
         return {
@@ -35,6 +43,7 @@ export const deleteTaskHandler = async (event: APIGatewayEvent) => {
         };
     }
 
+
     try {
         await client.send(new UpdateCommand({
             TableName: tableName,
@@ -42,9 +51,10 @@ export const deleteTaskHandler = async (event: APIGatewayEvent) => {
                 UserId: userId,
                 ProjectId: projectId,
             },
-            ConditionExpression: "attribute_exists(Tasks.#TaskId)",
-            UpdateExpression: 'REMOVE Tasks.#TaskId',
+            ConditionExpression: "attribute_exists(Phases.#Phase.#TaskId)",
+            UpdateExpression: 'REMOVE Phases.#Phase.#TaskId',
             ExpressionAttributeNames: {
+                "#Phase": phase,
                 "#TaskId": taskId,
             },
         }));

@@ -1,5 +1,5 @@
 {
-  "body": "{\"Name\": \"Test project event\", \"Phases\": [ \"Todo\",  \"In Progress\",  \"Complete\"]}",
+  "body": "{\"ProjectId\": \"68720381-aa44-401f-b482-f11fa37aee07\"}",
   "requestContext": {
     "authorizer": {
       "claims": {
@@ -11,7 +11,7 @@
     "requestType": "project"
   },
   "resource": "/facilitator/{requestType}",
-  "httpMethod": "POST",
+  "httpMethod": "DELETE",
   "headers": {
     "Content-Type": "application/json"
   }

@@ -5,6 +5,7 @@ import {responseHeaders} from "../../utils/headers";
 
 export const editProjectHandler = async (event: APIGatewayEvent) => {
     const tableName = process.env.PROJECTS_TABLE;
+
     if (!tableName) {
         return {
             statusCode: 500,
@@ -13,7 +14,7 @@ export const editProjectHandler = async (event: APIGatewayEvent) => {
         };
     }
 
-    if (!event.body || !event.requestContext.authorizer) {
+    if (!event.requestContext.authorizer) {
         console.log("Function event:", event);
         return {
             statusCode: 400,
@@ -22,9 +23,19 @@ export const editProjectHandler = async (event: APIGatewayEvent) => {
         };
     }
 
-    const projectParameters = JSON.parse(event.body);
     const userId = event.requestContext.authorizer.claims.sub;
-    const {Project: project, ProjectId: projectId} = projectParameters;
+
+    if (!event.body) {
+        console.log("Function event:", event);
+        return {
+            statusCode: 400,
+            body: JSON.stringify({message: "Unauthorized"}),
+            headers: responseHeaders
+        };
+    }
+
+    const projectParameters = JSON.parse(event.body);
+    const {ProjectId: projectId, Project: name} = projectParameters;
 
     try {
         await client.send(new UpdateCommand({
@@ -34,10 +45,13 @@ export const editProjectHandler = async (event: APIGatewayEvent) => {
                 ProjectId: projectId,
             },
             ConditionExpression: "ProjectId = :ProjectId",
-            UpdateExpression: "SET Project = :Project",
+            UpdateExpression: "SET #Project = :Project",
+            ExpressionAttributeNames: {
+                "#Project": "Project",
+            },
             ExpressionAttributeValues: {
                 ":ProjectId": projectId,
-                ":Project": project,
+                ":Project": name,
             },
         }));
 
@@ -47,10 +61,10 @@ export const editProjectHandler = async (event: APIGatewayEvent) => {
             headers: responseHeaders
         };
     } catch (error: any) {
-        console.error("Error updating project:", error);
+        console.error("Error updating name:", error);
         return {
             statusCode: 500,
-            body: JSON.stringify({message: "Failed to update project", error: error.message}),
+            body: JSON.stringify({message: "Failed to update name", error: error.message}),
             headers: responseHeaders
         };
     }

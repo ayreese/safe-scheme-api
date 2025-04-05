@@ -1,5 +1,5 @@
 {
-  "body": "{\"Name\": \"Test project event\", \"Phases\": [ \"Todo\",  \"In Progress\",  \"Complete\"]}",
+  "body": "{\"ProjectId\": \"8991dcef-97ec-4011-b2bf-dcb58768feab\", \"Phase\": \"Todo\", \"Name\": \"Test update task function\", \"Description\": \"This is a test to test the function for updating the phase of a task\"}",
   "requestContext": {
     "authorizer": {
       "claims": {
@@ -8,7 +8,7 @@
     }
   },
   "pathParameters": {
-    "requestType": "project"
+    "requestType": "task"
   },
   "resource": "/facilitator/{requestType}",
   "httpMethod": "POST",

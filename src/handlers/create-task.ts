@@ -11,11 +11,10 @@ export const createTaskHandler = async (event: APIGatewayEvent) => {
         throw new Error("PROJECTS_TABLE is not set in environment variables");
     }
 
-    if (!event.body || !event.requestContext.authorizer || !event.pathParameters) {
+    if (!event.body || !event.requestContext.authorizer) {
         console.info("Missing required parameters:", {
             body: event.body,
             context: event.requestContext,
-            path: event.pathParameters,
         });
         return {
             statusCode: 400,
@@ -27,35 +26,37 @@ export const createTaskHandler = async (event: APIGatewayEvent) => {
             },
         };
     }
-    const {TaskDescription} = JSON.parse(event.body);
-    const projectId = event.pathParameters.ProjectId;
+    const task = JSON.parse(event.body);
+    const {ProjectId: projectId, Phase: phase, Name: name, Description: description} = task
     const userId = event.requestContext.authorizer.claims.sub; // Get userId from event provided by cognito
 
-    if (!TaskDescription) {
+    if (!name) {
         return {
             statusCode: 400,
-            body: JSON.stringify({message: "TaskDescription is required"}),
+            body: JSON.stringify({message: "description is required"}),
             headers: responseHeaders
         };
     }
 
     try {
         const taskId = crypto.randomUUID();
-       await client.send(new UpdateCommand({
+        await client.send(new UpdateCommand({
             TableName: tableName,
             Key: {
                 UserId: userId,
                 ProjectId: projectId,
             },
-            UpdateExpression: "SET Tasks.#TaskId = :TaskData",
+            UpdateExpression: "SET Phases.#Phase.#TaskId = :TaskData",
             ExpressionAttributeNames: {
+                "#Phase": phase,
                 "#TaskId": taskId,
             },
             ExpressionAttributeValues: {
                 ":TaskData": {
-                    "Description": TaskDescription,
-                    "Status": false,
-                    "Subtasks": {},
+                    "name": name,
+                    "description": description,
+                    "status": false,
+                    "subtasks": {},
                 },
             },
         }));

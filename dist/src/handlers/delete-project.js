@@ -9,18 +9,29 @@ const deleteProjectHandler = async (event) => {
     if (!tableName) {
         throw new Error("No table name provided");
     }
-    if (!event.pathParameters || !event.pathParameters.ProjectId || !event.pathParameters.UserId) {
-        console.info("Missing path parameters:", event.pathParameters);
+    if (!event.requestContext.authorizer) {
+        console.info("Unauthorized user: missing or invalid token");
         return {
             statusCode: 400,
             body: JSON.stringify({
-                message: "UserId and ProjectId must be provided.",
+                message: "Unauthorized user",
             }),
             headers: headers_1.responseHeaders
         };
     }
-    const userId = event.pathParameters.UserId;
-    const projectId = event.pathParameters.ProjectId;
+    const userId = event.requestContext.authorizer.claims.sub;
+    if (!event.body) {
+        console.info("Unauthorized user: missing or invalid token");
+        return {
+            statusCode: 400,
+            body: JSON.stringify({
+                message: "Unauthorized user",
+            }),
+            headers: headers_1.responseHeaders
+        };
+    }
+    const projectToDelete = JSON.parse(event.body);
+    const { ProjectId: projectId } = projectToDelete;
     try {
         await dynamoClient_1.client.send(new lib_dynamodb_1.DeleteCommand({
             TableName: tableName,

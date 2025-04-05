@@ -12,6 +12,7 @@ const edit_subtask_1 = require("./edit-subtask");
 const delete_project_1 = require("./delete-project");
 const delete_task_1 = require("./delete-task");
 const delete_subtask_1 = require("./delete-subtask");
+const update_task_1 = require("./update-task");
 const facilitatorHandler = async (event) => {
     if (!event.requestContext.authorizer) {
         return {
@@ -61,6 +62,8 @@ const facilitatorHandler = async (event) => {
                     return await (0, edit_task_1.editTaskHandler)(event);
                 case "subtask":
                     return await (0, edit_subtask_1.editSubtaskHandler)(event);
+                case "updateTask":
+                    return await (0, update_task_1.updateTaskHandler)(event);
                 default:
                     return defaultRequest;
             }

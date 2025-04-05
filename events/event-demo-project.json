@@ -11,7 +11,7 @@
   "request": {
     "userAttributes": {
       "sub": "e4b1c6e8-a9c7-4a3d-87bb-11b5a9f77933",
-      "cognito:username": "test-user-123",
+      "cognito:username": "test-user-456",
       "email": "test-user@example.com",
       "given_name": "Test",
       "family_name": "User"

@@ -1,5 +1,5 @@
 {
-  "body": "{\"Name\": \"Test project event\", \"Phases\": [ \"Todo\",  \"In Progress\",  \"Complete\"]}",
+  "body": "{\"ProjectId\": \"8991dcef-97ec-4011-b2bf-dcb58768feab\", \"Phase\": \"Todo\", \"TaskId\": \"35461ee2-1267-4137-9ece-a66303727222\"}",
   "requestContext": {
     "authorizer": {
       "claims": {
@@ -8,10 +8,10 @@
     }
   },
   "pathParameters": {
-    "requestType": "project"
+    "requestType": "task"
   },
   "resource": "/facilitator/{requestType}",
-  "httpMethod": "POST",
+  "httpMethod": "DELETE",
   "headers": {
     "Content-Type": "application/json"
   }

@@ -1,0 +1,18 @@
+{
+  "body": "{\"ProjectId\": \"8991dcef-97ec-4011-b2bf-dcb58768feab\", \"Phase\": \"Todo\",  \"TaskId\": \"d3e3466b-ae2b-463b-9e3c-52ba230145a2\", \"SubtaskId\": \"decfa33b-4d0c-4f04-b646-f2a7a6acb499\"}",
+  "requestContext": {
+    "authorizer": {
+      "claims": {
+        "sub": "test-user-123"
+      }
+    }
+  },
+  "pathParameters": {
+    "requestType": "subtask"
+  },
+  "resource": "/facilitator/{requestType}",
+  "httpMethod": "DELETE",
+  "headers": {
+    "Content-Type": "application/json"
+  }
+}

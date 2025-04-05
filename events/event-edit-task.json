@@ -1,0 +1,18 @@
+{
+  "body": "{\"ProjectId\": \"8991dcef-97ec-4011-b2bf-dcb58768feab\", \"Phase\": \"Todo\", \"TaskId\": \"d3e3466b-ae2b-463b-9e3c-52ba230145a2\", \"Name\": \"Successfully edited task\", \"Description\": \"Tested for edit task and associated subtask\", \"SubtasksToUpdate\": {\"67820067-e737-4a11-945e-a1fcaf5c5954\": {\"name\": \"This is a updated subtask double check\", \"status\": false}, \"18e12195-6606-4214-93a4-76c1b5b793ba\": {\"name\": \"Another updated subtask\", \"status\": false}}, \"Subtasks\": [{\"name\": \"New subtask 1\", \"status\": false}, {\"name\": \"New subtask 2\", \"status\": false}], \"Status\": false}",
+  "requestContext": {
+    "authorizer": {
+      "claims": {
+        "sub": "test-user-123"
+      }
+    }
+  },
+  "pathParameters": {
+    "requestType": "task"
+  },
+  "resource": "/facilitator/{requestType}",
+  "httpMethod": "PUT",
+  "headers": {
+    "Content-Type": "application/json"
+  }
+}

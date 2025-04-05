@@ -10,6 +10,10 @@ const dynamoClient_1 = require("../../utils/dynamoClient");
 const headers_1 = require("../../utils/headers");
 const { createPhases } = require("../../utils/functions");
 const createProjectHandler = async (event) => {
+    const tableName = process.env.PROJECTS_TABLE;
+    if (!tableName) {
+        throw new Error("PROJECTS_TABLE environment variable is not set.");
+    }
     if (!event.body || !event.requestContext.authorizer) {
         return {
             statusCode: 400,
@@ -18,10 +22,6 @@ const createProjectHandler = async (event) => {
         };
     }
     const project = JSON.parse(event.body);
-    const tableName = process.env.PROJECTS_TABLE;
-    if (!tableName) {
-        throw new Error("PROJECTS_TABLE environment variable is not set.");
-    }
     const { Name: name, Phases: phasesArray } = project;
     const userId = event.requestContext.authorizer.claims.sub;
     if (!name || !phasesArray) {
@@ -40,7 +40,7 @@ const createProjectHandler = async (event) => {
                 ProjectId: projectId,
                 Project: name,
                 Phases: createPhases(phasesArray),
-                Tasks: {},
+                Status: false
             }
         }));
         const statusCode = data.$metadata.httpStatusCode;

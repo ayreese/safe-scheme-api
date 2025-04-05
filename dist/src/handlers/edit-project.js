@@ -13,7 +13,7 @@ const editProjectHandler = async (event) => {
             headers: headers_1.responseHeaders
         };
     }
-    if (!event.body || !event.requestContext.authorizer) {
+    if (!event.requestContext.authorizer) {
         console.log("Function event:", event);
         return {
             statusCode: 400,
@@ -21,9 +21,17 @@ const editProjectHandler = async (event) => {
             headers: headers_1.responseHeaders
         };
     }
-    const projectParameters = JSON.parse(event.body);
     const userId = event.requestContext.authorizer.claims.sub;
-    const { Project: project, ProjectId: projectId } = projectParameters;
+    if (!event.body) {
+        console.log("Function event:", event);
+        return {
+            statusCode: 400,
+            body: JSON.stringify({ message: "Unauthorized" }),
+            headers: headers_1.responseHeaders
+        };
+    }
+    const projectParameters = JSON.parse(event.body);
+    const { ProjectId: projectId, Project: name } = projectParameters;
     try {
         await dynamoClient_1.client.send(new lib_dynamodb_1.UpdateCommand({
             TableName: tableName,
@@ -32,10 +40,13 @@ const editProjectHandler = async (event) => {
                 ProjectId: projectId,
             },
             ConditionExpression: "ProjectId = :ProjectId",
-            UpdateExpression: "SET Project = :Project",
+            UpdateExpression: "SET #Project = :Project",
+            ExpressionAttributeNames: {
+                "#Project": "Project",
+            },
             ExpressionAttributeValues: {
                 ":ProjectId": projectId,
-                ":Project": project,
+                ":Project": name,
             },
         }));
         return {
@@ -45,10 +56,10 @@ const editProjectHandler = async (event) => {
         };
     }
     catch (error) {
-        console.error("Error updating project:", error);
+        console.error("Error updating name:", error);
         return {
             statusCode: 500,
-            body: JSON.stringify({ message: "Failed to update project", error: error.message }),
+            body: JSON.stringify({ message: "Failed to update name", error: error.message }),
             headers: headers_1.responseHeaders
         };
     }

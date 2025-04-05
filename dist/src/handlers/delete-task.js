@@ -14,7 +14,16 @@ const deleteTaskHandler = async (event) => {
             headers: headers_1.responseHeaders
         };
     }
-    if (!event.pathParameters || !event.pathParameters.UserId || !event.pathParameters.ProjectId || !event.pathParameters.TaskId) {
+    if (!event.requestContext.authorizer) {
+        console.log("parameters:", event.pathParameters);
+        return {
+            statusCode: 400,
+            body: JSON.stringify({ message: "Invalid permissions or token" }),
+            headers: headers_1.responseHeaders
+        };
+    }
+    const userId = event.requestContext.authorizer.claims.sub;
+    if (!event.body) {
         console.log("parameters:", event.pathParameters);
         return {
             statusCode: 400,
@@ -22,9 +31,8 @@ const deleteTaskHandler = async (event) => {
             headers: headers_1.responseHeaders
         };
     }
-    const userId = event.pathParameters.UserId;
-    const projectId = event.pathParameters.ProjectId;
-    const taskId = event.pathParameters.TaskId;
+    const taskToDelete = JSON.parse(event.body);
+    const { ProjectId: projectId, Phase: phase, TaskId: taskId } = taskToDelete;
     if (!taskId) {
         return {
             statusCode: 400,
@@ -39,9 +47,10 @@ const deleteTaskHandler = async (event) => {
                 UserId: userId,
                 ProjectId: projectId,
             },
-            ConditionExpression: "attribute_exists(Tasks.#TaskId)",
-            UpdateExpression: 'REMOVE Tasks.#TaskId',
+            ConditionExpression: "attribute_exists(Phases.#Phase.#TaskId)",
+            UpdateExpression: 'REMOVE Phases.#Phase.#TaskId',
             ExpressionAttributeNames: {
+                "#Phase": phase,
                 "#TaskId": taskId,
             },
         }));
