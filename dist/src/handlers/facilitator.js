@@ -70,21 +70,16 @@ const facilitatorHandler = async (event) => {
         case "DELETE":
             switch (requestType) {
                 case "project":
-                    await (0, delete_project_1.deleteProjectHandler)(event);
-                    break;
+                    return await (0, delete_project_1.deleteProjectHandler)(event);
                 case "task":
-                    await (0, delete_task_1.deleteTaskHandler)(event);
-                    break;
+                    return await (0, delete_task_1.deleteTaskHandler)(event);
                 case "subtask":
-                    await (0, delete_subtask_1.deleteSubtaskHandler)(event);
-                    break;
+                    return await (0, delete_subtask_1.deleteSubtaskHandler)(event);
                 default:
                     return defaultRequest;
             }
-            break;
         default:
             return defaultRequest;
     }
-    return defaultRequest;
 };
 exports.facilitatorHandler = facilitatorHandler;

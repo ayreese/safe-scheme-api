@@ -1,4 +1,4 @@
-import {APIGatewayEvent, APIGatewayProxyResult} from "aws-lambda";
+import {APIGatewayEvent} from "aws-lambda";
 import {responseHeaders} from "../../utils/headers";
 import {getProjectsHandler} from "./get-projects";
 import {createProjectHandler} from "./create-project";
@@ -13,7 +13,7 @@ import {deleteSubtaskHandler} from "./delete-subtask";
 import {updateTaskHandler} from "./update-task";
 
 
-export const facilitatorHandler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
+export const facilitatorHandler = async (event: APIGatewayEvent) => {
     if (!event.requestContext.authorizer) {
         return {
             statusCode: 400,
@@ -77,20 +77,15 @@ export const facilitatorHandler = async (event: APIGatewayEvent): Promise<APIGat
         case "DELETE":
             switch (requestType) {
                 case "project":
-                    await deleteProjectHandler(event);
-                    break;
+                    return await deleteProjectHandler(event);
                 case "task":
-                    await deleteTaskHandler(event);
-                    break;
+                    return await deleteTaskHandler(event);
                 case "subtask":
-                    await deleteSubtaskHandler(event);
-                    break;
+                    return await deleteSubtaskHandler(event);
                 default:
                     return defaultRequest
             }
-            break
         default:
             return defaultRequest
     }
-    return defaultRequest
 };
